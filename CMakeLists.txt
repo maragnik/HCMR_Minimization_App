@@ -9,6 +9,9 @@ find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets PrintSupport)
 # file from the qt5_wrap_ui call below.
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+include_directories (HCMR_Minimization PUBLIC Sources)
+include_directories (HCMR_Minimization PUBLIC SubProjects/HCMRMinimizationLib)
+
 add_subdirectory(SubProjects/Minuit2)
 add_subdirectory(SubProjects/HCMRMinimizationLib)
 add_subdirectory(SubProjects/test)
@@ -34,9 +37,6 @@ add_executable(HCMR_Minimization
 	${project_headers}
 	${ui_wrap} 
 	${moc_sources})
-
-target_include_directories (HCMR_Minimization PUBLIC Sources)
-target_include_directories (HCMR_Minimization PUBLIC SubProjects/HCMRMinimizationLib)
 
 target_link_libraries(HCMR_Minimization 
 	PUBLIC

@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 3.6)
 
 set(HCMRMinimization_sources 
 		HCMRMinimization.cpp
-		HCMRDatabase.cpp
-		HCMRUnitaryInput.cpp)
+		HCMRSpectrum.cpp
+		HCMRModel.cpp
+		HCMRData.cpp)
 
 set(HCMRMinimization_headers 
 		HCMRMinimization.h
-		HCMRDatabase.h
-		HCMRUnitaryInput.h)
+		HCMRSpectrum.h
+		HCMRModel.h
+		HCMRData.h)
 
 # add the executable
 add_library(HCMRMinimizationLib ${HCMRMinimization_sources} ${HCMRMinimization_headers})
