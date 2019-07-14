@@ -9,19 +9,20 @@ find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets PrintSupport)
 # file from the qt5_wrap_ui call below.
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_subdirectory(libs/Minuit2)
-add_subdirectory(libs/HCMRMinimizationLib)
+add_subdirectory(SubProjects/Minuit2)
+add_subdirectory(SubProjects/HCMRMinimizationLib)
+add_subdirectory(SubProjects/test)
 
 set(project_sources 
-		main.cpp 
-		src/mainwindow.cpp 
-		libs/qcustomplot/qcustomplot.cpp)
+		Sources/main.cpp 
+		Sources/mainwindow.cpp 
+		Sources/qcustomplot.cpp)
 		
 set(project_headers 
-		includes/mainwindow.h 
-		libs/qcustomplot/qcustomplot.h)
+		Sources/mainwindow.h 
+		Sources/qcustomplot.h)
 		
-set(project_ui ui/mainwindow.ui)
+set(project_ui Sources/mainwindow.ui)
 
 # wrap the ui file to a c++ header
 qt5_wrap_ui(ui_wrap ${project_ui})
@@ -34,14 +35,16 @@ add_executable(HCMR_Minimization
 	${ui_wrap} 
 	${moc_sources})
 
-target_include_directories (HCMR_Minimization PUBLIC includes)
+target_include_directories (HCMR_Minimization PUBLIC Sources)
+target_include_directories (HCMR_Minimization PUBLIC SubProjects/HCMRMinimizationLib)
 
 target_link_libraries(HCMR_Minimization 
 	PUBLIC
 	Qt5::Core
 	Qt5::Gui 
 	Qt5::Widgets
-	Qt5::PrintSupport)
+	Qt5::PrintSupport
+	HCMRMinimizationLib)
 
 # auto copy dlls if on windows
 if(WIN32)
@@ -53,8 +56,6 @@ if(WIN32)
 		
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT HCMR_Minimization)
 endif(WIN32)
-
-add_subdirectory(test)
 
 
 
