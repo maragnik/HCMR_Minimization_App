@@ -4,8 +4,9 @@
 ## Genral info
 The project is bases on:
 - Qt for the graphics
-- QCustomPlot for the plots
+- QCustomPlot for the plots (https://www.qcustomplot.com/)
 - ROOT Minuit2 for minimization
+- Loguru logger (https://github.com/emilk/loguru)
 ## Setting up the development environment
 1. Install an IDE (e.g. Visual Studio)
 2. Install Qt (open source) https://www.qt.io/download
