@@ -10,7 +10,7 @@ public:
 	HCMRModel();
 	void addNewUnitary(const std::string& file);
 	void print() const;
-	typeY getY(const std::vector<double>& par, typeX x) const;
+	YType getY(const std::vector<double>& par, XType x) const;
 private:
 	std::vector<HCMRSpectrum> _unitaries;
 };

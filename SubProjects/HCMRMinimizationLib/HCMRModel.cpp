@@ -12,19 +12,21 @@ void HCMRModel::addNewUnitary(const std::string& file)
 
 void HCMRModel::print() const
 {
-	std::cout << "----PRINTING ALL " << _unitaries.size() << " UNITARIES----" << std::endl;
+	std::cout << "\n\n########################################################" << std::endl;
+	std::cout << "PRINTING MODEL CONSISTING OF " << _unitaries.size() << " UNITARIES      " << std::endl;
+	std::cout << "########################################################\n" << std::endl;
 	int count = 0;
 	for (HCMRSpectrum unitary : _unitaries)
 	{
 		count++;
-		std::cout << "\n\nUnitary #" << count << std::endl;
+		std::cout << "Unitary #" << count << std::endl;
 		unitary.print();
 	}
 }
 
-typeY HCMRModel::getY(const std::vector<double>& par, typeX x) const
+YType HCMRModel::getY(const std::vector<double>& par, XType x) const
 {
-	typeY ret = 0;
+	YType ret = 0;
 	for (int i = 0; i < _unitaries.size(); ++i)
 	{
 		const HCMRSpectrum& spectrum = _unitaries.at(i);

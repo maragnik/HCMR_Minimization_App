@@ -2,35 +2,37 @@
 #include "Minuit2/FCNBase.h"
 #include "Minuit2/MnMigrad.h"
 #include "Minuit2/FunctionMinimum.h"
-
-#include <cassert>
+#include "common_definitions.h"
+#include <string>
+#include "loguru.h"
 
 void testFileParsing()
 {
+	LOG_F(INFO, "Test File Parsing");
 	HCMRSpectrum input;
-	input.fillFromFile("C:\\prj\\elkethe\\HCMR_Minimization_App\\Extra\\testRandom.txt");
+	input.fillFromFile(PATH_TO_EXTERNALS + "/testRandom.txt");
 	input.print();
 }
 
 void test1()
 {
+	LOG_F(INFO, "Test Data and Model");
 	HCMRData data;
-	data.fillFromFile("C:\\prj\\elkethe\\HCMR_Minimization_App\\Extra\\testRandom.txt");
+	data.fillData(PATH_TO_EXTERNALS + "/testRandom.txt");
 	HCMRModel model;
-	model.addNewUnitary("C:\\prj\\elkethe\\HCMR_Minimization_App\\Extra\\testModel.txt");
-	model.addNewUnitary("C:\\prj\\elkethe\\HCMR_Minimization_App\\Extra\\testModel.txt");
-	model.addNewUnitary("C:\\prj\\elkethe\\HCMR_Minimization_App\\Extra\\testModel.txt");
+	model.addNewUnitary(PATH_TO_EXTERNALS + "/testModel.txt");
+	model.addNewUnitary(PATH_TO_EXTERNALS + "/testModel.txt");
+	model.addNewUnitary(PATH_TO_EXTERNALS + "/testModel.txt");
 	model.print();
 }
 
-void test2()
+void testMinuit2()
 {
+	LOG_F(INFO, "Test Minimization with MINUT2");
 	HCMRMinimization minimization;
-	minimization.addData("C:\\prj\\elkethe\\HCMR_Minimization_App\\Extra\\testRandom.txt");
-	minimization.addUnitaryToModel("C:\\prj\\elkethe\\HCMR_Minimization_App\\Extra\\testModel.txt");
-	std::cout << "Print Data -->" << std::endl;
+	minimization.addData(PATH_TO_EXTERNALS + "/testRandom.txt");
+	minimization.addUnitaryToModel(PATH_TO_EXTERNALS + "/testModel.txt");
 	minimization._data.print();
-	std::cout << "Print Model -->" << std::endl;
 	minimization._model.print();
 
 	// create Minuit parameters with names
@@ -42,16 +44,33 @@ void test2()
 	ROOT::Minuit2::FunctionMinimum min = migrad();
 }
 
-double model(double x, double parameter)
+void testLogger()
 {
-	return parameter;
+	loguru::g_stderr_verbosity = 5;
+	LOG_F(0, "Test Logger verbosity 0 (verbosity set to 5)");
+	LOG_F(1, "Test Logger verbosity 1 (verbosity set to 5)");
+	LOG_F(2, "Test Logger verbosity 2 (verbosity set to 5)");
+	LOG_F(3, "Test Logger verbosity 3 (verbosity set to 5)");
+	LOG_F(4, "Test Logger verbosity 4 (verbosity set to 5)");
+	LOG_F(5, "Test Logger verbosity 5 (verbosity set to 5)");
+	LOG_F(6, "Test Logger verbosity 6 (verbosity set to 5)");
+	LOG_F(7, "Test Logger verbosity 7 (verbosity set to 5)");
+	LOG_F(INFO, "I'm hungry for some %.3f!", 3.14159);
+	LOG_F(WARNING, "I'm hungry for some %.3f!", 3.14159);
+	LOG_F(ERROR, "I'm hungry for some %.3f!", 3.14159);
+	//LOG_F(FATAL, "I'm hungry for some %.3f!", 3.14159);
+
+	LOG_IF_F(ERROR, true, "Will only show if true");
+	LOG_IF_F(ERROR, false, "Will not show if false");
 }
 
 int main(int argc, char* argv[]) {
 
-	//testFileParsing();
-	//test1();
-	test2();
-	assert(true);
+	loguru::init(argc, argv);
+	loguru::add_file("test.log", loguru::Append, loguru::Verbosity_MAX);
+	testFileParsing();
+	test1();
+	testMinuit2();
+	testLogger();
 	return 0;
 }

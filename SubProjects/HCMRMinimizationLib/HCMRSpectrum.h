@@ -1,33 +1,27 @@
 ﻿#ifndef HCMRSPECTRUM_H
 # define HCMRSPECTRUM_H
 
-#include <map>
-#include <string>
+#include "common_definitions.h"
 #include <fstream>
 #include <iostream>
 #include <limits>
-
-using typeX = double;
-using typeY = double;
-using DataType = std::map<typeX, typeY>;
-using PointType = std::pair<typeX, typeY>;
-const double LOW_VALUE = std::numeric_limits<float>::min();
 
 class HCMRSpectrum
 {
 public:
 	HCMRSpectrum();
-	void addPoint(typeX x, typeY y);
-	const typeY getYViaLinearInterpolation(typeX x) const;
+	void addPoint(XType x, YType y);
+	const YType getYViaLinearInterpolation(XType x) const;
 	void setName(std::string name);
 	void print() const;
 	bool fillFromFile(const std::string& file);
 	void fillNameFromFile(const std::string& file);
-	const DataType& getXYData() const;
+	const XYMapType& getXYData() const;
 
 private:
-	DataType _spectrum;
+	XYMapType _spectrum;
 	std::string _name;
+	bool _isEmpty;
 };
 
 #endif // HCMRSPECTRUM_H

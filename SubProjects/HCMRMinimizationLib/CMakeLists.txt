@@ -7,6 +7,7 @@ set(HCMRMinimization_sources
 		HCMRData.cpp)
 
 set(HCMRMinimization_headers 
+        common_definitions.h
 		HCMRMinimization.h
 		HCMRSpectrum.h
 		HCMRModel.h
@@ -14,6 +15,7 @@ set(HCMRMinimization_headers
 
 # add the executable
 add_library(HCMRMinimizationLib ${HCMRMinimization_sources} ${HCMRMinimization_headers})
+target_link_libraries(HCMRMinimizationLib PUBLIC loguru_logger)
 target_link_libraries(HCMRMinimizationLib PUBLIC Minuit2)
 
 

@@ -9,5 +9,3 @@ add_executable(HCMRMinimizationLib_Test ${test_sources} ${test_headers})
 target_link_libraries(HCMRMinimizationLib_Test PUBLIC HCMRMinimizationLib) 
 
 
-
-

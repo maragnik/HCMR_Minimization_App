@@ -4,7 +4,7 @@ HCMRMinimization::HCMRMinimization() {}
 
 void HCMRMinimization::addData(const std::string& file)
 {
-	_data.fillFromFile(file);
+	_data.fillData(file);
 }
 
 void HCMRMinimization::addUnitaryToModel(const std::string& file)
@@ -15,10 +15,10 @@ void HCMRMinimization::addUnitaryToModel(const std::string& file)
 double HCMRMinimization::computeChiSquare(const std::vector<double>& par) const
 {
 	double chi2 = 0;
-	for (const PointType& point : _data.getXYData())
+	for (const PointType& point : _data.getSpectum().getXYData())
 	{
-		typeY modelY = _model.getY(par, point.first);
-		typeY diff = point.second - modelY;
+		YType modelY = _model.getY(par, point.first);
+		YType diff = point.second - modelY;
 		chi2 += diff * diff / modelY;
 	}
 	std::cout << "par0 = " << par[0] << "  chi2 = " << chi2 << std::endl;

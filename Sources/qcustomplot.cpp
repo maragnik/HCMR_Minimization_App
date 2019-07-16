@@ -11473,7 +11473,7 @@ void QCPItemAnchor::removeChildY(QCPItemPosition *pos)
   Returns the current position type.
   
   If different types were set for X and Y (\ref setTypeX, \ref setTypeY), this method returns the
-  type of the X coordinate. In that case rather use \a typeX() and \a typeY().
+  type of the X coordinate. In that case rather use \a XType() and \a YType().
   
   \see setType
 */

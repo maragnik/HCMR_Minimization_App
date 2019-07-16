@@ -1,17 +1,16 @@
 ﻿#include "HCMRSpectrum.h"
 #include <algorithm>
 
-
 HCMRSpectrum::HCMRSpectrum() {}
 
-void HCMRSpectrum::addPoint(typeX x, typeY y)
+void HCMRSpectrum::addPoint(XType x, YType y)
 {
-	_spectrum.insert(std::pair<typeX, typeY>(x, y));
+	_spectrum.insert(std::pair<XType, YType>(x, y));
 }
 
-const typeY HCMRSpectrum::getYViaLinearInterpolation(typeX x) const
+const YType HCMRSpectrum::getYViaLinearInterpolation(XType x) const
 {
-	typeY ret = 0;
+	YType ret = 0;
 	if (x < _spectrum.begin()->first)
 	{
 		ret = _spectrum.begin()->second;
@@ -22,9 +21,9 @@ const typeY HCMRSpectrum::getYViaLinearInterpolation(typeX x) const
 	}
 	else
 	{
-		DataType::const_iterator it = _spectrum.lower_bound(x);
-		typeX xUp = it->first;
-		typeX yUp = it->second;
+		XYMapType::const_iterator it = _spectrum.lower_bound(x);
+		XType xUp = it->first;
+		XType yUp = it->second;
 
 		if (xUp - x < LOW_VALUE)
 		{
@@ -33,9 +32,9 @@ const typeY HCMRSpectrum::getYViaLinearInterpolation(typeX x) const
 		else
 		{
 			it--;
-			typeX xDown = it->first;
-			typeX yDown = it->second;
-			ret = static_cast<typeY>(yDown + (x - xDown) * (yUp - yDown) / static_cast<double>(xUp - xDown));
+			XType xDown = it->first;
+			XType yDown = it->second;
+			ret = static_cast<YType>(yDown + (x - xDown) * (yUp - yDown) / static_cast<double>(xUp - xDown));
 		}
 
 	}
@@ -50,7 +49,6 @@ void HCMRSpectrum::setName(std::string name)
 
 void HCMRSpectrum::print() const
 {
-
 	std::cout << "UnitarySpectrumName = " << _name << std::endl;
 	std::cout << "-----------------------------------------------" << std::endl;
 	for (PointType point : _spectrum)
@@ -100,25 +98,17 @@ bool HCMRSpectrum::fillFromFile(const std::string & file)
 
 void HCMRSpectrum::fillNameFromFile(const std::string & file)
 {
-	size_t pos = file.find_last_of("\\");
+	size_t pos = std::min(file.find_last_of("\\"), file.find_last_of("/"));
 	size_t posExt = file.find_last_of(".");
 	if (file.empty() || (pos == std::string::npos))
 	{
 		_name = "Undefined";
 		return;
 	}
-
-	if (pos < posExt)
-	{
-		_name = file.substr(pos + 1, posExt - pos - 1);
-	}
-	else
-	{
-		_name = file.substr(pos + 1);
-	}
+	_name = (pos < posExt) ? file.substr(pos + 1, posExt - pos - 1) : file.substr(pos + 1);
 }
 
-const DataType& HCMRSpectrum::getXYData() const
+const XYMapType & HCMRSpectrum::getXYData() const
 {
 	return _spectrum;
 }

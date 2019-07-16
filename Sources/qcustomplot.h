@@ -3501,9 +3501,9 @@ public:
 	virtual ~QCPItemPosition();
 
 	// getters:
-	PositionType type() const { return typeX(); }
-	PositionType typeX() const { return mPositionTypeX; }
-	PositionType typeY() const { return mPositionTypeY; }
+	PositionType type() const { return XType(); }
+	PositionType XType() const { return mPositionTypeX; }
+	PositionType YType() const { return mPositionTypeY; }
 	QCPItemAnchor* parentAnchor() const { return parentAnchorX(); }
 	QCPItemAnchor* parentAnchorX() const { return mParentAnchorX; }
 	QCPItemAnchor* parentAnchorY() const { return mParentAnchorY; }
