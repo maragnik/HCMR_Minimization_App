@@ -3,9 +3,9 @@
 ...Giorgo fill up...
 ## Genral info
 The project is bases on:
-- Qt for the graphics
+- Qt for the graphics (https://www.qt.io/)
 - QCustomPlot for the plots (https://www.qcustomplot.com/)
-- ROOT Minuit2 for minimization
+- ROOT Minuit2 for minimization (https://github.com/GooFit/Minuit2)
 - Loguru logger (https://github.com/emilk/loguru)
 ## Setting up the development environment
 1. Install an IDE (e.g. Visual Studio)
