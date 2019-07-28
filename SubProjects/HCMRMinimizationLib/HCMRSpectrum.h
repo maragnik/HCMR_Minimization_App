@@ -5,23 +5,28 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <vector>
 
 class HCMRSpectrum
 {
 public:
 	HCMRSpectrum();
-	void addPoint(XType x, YType y);
-	const YType getYViaLinearInterpolation(XType x) const;
+	HCMRSpectrum(std::vector<double> dataVector, std::string name);
+
+	void addCountsInChannel(uint32_t channelNum, double counts);
 	void setName(std::string name);
+	void setSpectrum(std::vector<double> dataVector);
+
+	double getCountsInChannel(uint32_t channelNum) const;
+	std::string getName() const;
+	const std::vector<double>& getDataVector() const;
+	uint32_t size() const;
+	void clearSpectrum();
 	void print() const;
-	bool fillFromFile(const std::string& file);
-	void fillNameFromFile(const std::string& file);
-	const XYMapType& getXYData() const;
 
 private:
-	XYMapType _spectrum;
+	std::vector<double> _dataVector;
 	std::string _name;
-	bool _isEmpty;
 };
 
 #endif // HCMRSPECTRUM_H

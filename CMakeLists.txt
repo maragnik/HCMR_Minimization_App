@@ -23,11 +23,16 @@ add_subdirectory(SubProjects/test)
 set(project_sources 
 		Sources/main.cpp 
 		Sources/mainwindow.cpp 
-		Sources/qcustomplot.cpp)
+		Sources/qcustomplot.cpp
+		Sources/QTPlotter.cpp
+		Sources/MyQtListener.cpp)
 		
 set(project_headers 
 		Sources/mainwindow.h 
-		Sources/qcustomplot.h)
+		Sources/qcustomplot.h
+		Sources/QTPlotter.h
+		Sources/MyQtListener.h)
+set(other_headers )
 		
 set(project_ui Sources/mainwindow.ui)
 
@@ -38,7 +43,7 @@ qt5_wrap_cpp(moc_sources ${project_headers})
 # add the executable
 add_executable(HCMR_Minimization 
 	${project_sources} 
-	${project_headers}
+	${project_headers} ${other_headers}
 	${ui_wrap} 
 	${moc_sources})
 
