@@ -10,7 +10,7 @@ const std::string PATH_TO_EXTERNALS = PATH_TO_EXTERNALS_STRING;
 #error PATH_TO_EXTRAS_STRING is not defined
 #endif
 
-using XType = double;
+using XType = uint16_t;
 using YType = double;
 using XYMapType = std::map<XType, YType>;
 using PointType = std::pair<XType, YType>;

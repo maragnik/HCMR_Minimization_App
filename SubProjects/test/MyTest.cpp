@@ -5,26 +5,9 @@
 #include "common_definitions.h"
 #include <string>
 #include "loguru.h"
+#include "HCMRParser.h"
+#include "HCMRPeekFinder.h"
 
-void testFileParsing()
-{
-	LOG_F(INFO, "Test File Parsing");
-	HCMRSpectrum input;
-	input.fillFromFile(PATH_TO_EXTERNALS + "/testRandom.txt");
-	input.print();
-}
-
-void test1()
-{
-	LOG_F(INFO, "Test Data and Model");
-	HCMRData data;
-	data.fillData(PATH_TO_EXTERNALS + "/testRandom.txt");
-	HCMRModel model;
-	model.addNewUnitary(PATH_TO_EXTERNALS + "/testModel.txt");
-	model.addNewUnitary(PATH_TO_EXTERNALS + "/testModel.txt");
-	model.addNewUnitary(PATH_TO_EXTERNALS + "/testModel.txt");
-	model.print();
-}
 
 void testMinuit2()
 {
@@ -33,7 +16,6 @@ void testMinuit2()
 	minimization.addData(PATH_TO_EXTERNALS + "/testRandom.txt");
 	minimization.addUnitaryToModel(PATH_TO_EXTERNALS + "/testModel.txt");
 	minimization._data.print();
-	minimization._model.print();
 
 	// create Minuit parameters with names
 	ROOT::Minuit2::MnUserParameters upar;
@@ -64,13 +46,14 @@ void testLogger()
 	LOG_IF_F(ERROR, false, "Will not show if false");
 }
 
+void testExpData()
+{
+}
+
 int main(int argc, char* argv[]) {
 
 	loguru::init(argc, argv);
 	loguru::add_file("test.log", loguru::Append, loguru::Verbosity_MAX);
-	testFileParsing();
-	test1();
-	testMinuit2();
-	testLogger();
+	testExpData();
 	return 0;
 }
