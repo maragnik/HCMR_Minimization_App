@@ -25,7 +25,7 @@ public:
 	void print() const;
 
 private:
-	std::vector<double> _dataVector;
+	std::vector<double> data_Vector;
 	std::string _name;
 };
 

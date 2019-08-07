@@ -7,26 +7,20 @@
 #include "Minuit2/MnPrint.h"
 #include <time.h>
 
-HCMRPeekFinder::HCMRPeekFinder() : _data(nullptr), _fcn()
+HCMRPeekFinder::HCMRPeekFinder() : data_(nullptr), fcn_()
 {}
 
 void HCMRPeekFinder::setData(const std::vector<double>& data)
 {
-	_peekIndexes.clear();
-	_maxPeekWindow.clear();
-	_maxPeekWindowNoEdge.clear();
-	_maxPeekToValey.clear();
-	_peekWidth.clear();
-
-	_finalPeekIndexes.clear();
-	_finalPeekWidths.clear();
-	_data = &data;
+	peeks_.clear();
+	finalPeeks_.clear();
+	data_ = &data;
 }
 
 void HCMRPeekFinder::findPeeks()
 {
 
-	std::vector<double> logData = makeLogarithmic(*_data);
+	std::vector<double> logData = makeLogarithmic(*data_);
 	std::vector<double> smoothLogData = smooth(logData, 10);
 
 	findAllPeaks(smoothLogData);
@@ -90,53 +84,47 @@ bool HCMRPeekFinder::peekRemains(const std::vector<double>& data, int peekIndex,
 
 void HCMRPeekFinder::choosePeaks(int minPeekWindow, int minPeekWindowNoEdges, double minPeekToValey, int minPeekWidth)
 {
-	_finalPeekIndexes.clear();
-	_finalPeekWidths.clear();
-	for (int i = 0; i < _peekIndexes.size(); ++i)
+	finalPeeks_.clear();
+	for (int i = 0; i < peeks_.size(); ++i)
 	{
-		if (_maxPeekWindow[i] >= minPeekWindow &&
-			_maxPeekWindowNoEdge[i] >= minPeekWindowNoEdges &&
-			_maxPeekToValey[i] >= minPeekToValey &&
-			_peekWidth[i] >= minPeekWidth)
+		if (peeks_[i].width >= minPeekWindow &&
+			peeks_[i].widthNoEdge >= minPeekWindowNoEdges &&
+			peeks_[i].peekToValey >= minPeekToValey &&
+			peeks_[i].widthPtV >= minPeekWidth)
 		{
-			printf("%d\n", _peekIndexes[i]);
-			_finalPeekIndexes.push_back(_peekIndexes[i]);
-			_finalPeekWidths.push_back(_peekWidth[i]);
+			finalPeeks_.push_back(peeks_[i]);
 		}
 	}
 }
 
 void HCMRPeekFinder::findAllPeaks(const std::vector<double>& data)
 {
-	_peekIndexes.clear();
-	_maxPeekWindow.clear();
-	_maxPeekWindowNoEdge.clear();
-	_maxPeekToValey.clear();
-	_peekWidth.clear();
-
+	peeks_.clear();
 
 	bool accoundForEdges = true;
 	for (int peekIndex = 1; peekIndex < data.size() - 1; ++peekIndex)
 	{
 		if (isPeek(data, peekIndex))
 		{
-			_peekIndexes.push_back(peekIndex);
+			HCMRPeek peek;
+			peek.channel = peekIndex;
 
 			int currentHalfWindow = 2;
 			while (peekRemains(data, peekIndex, currentHalfWindow, accoundForEdges) && (2 * currentHalfWindow + 1 < data.size()))
 			{
 				currentHalfWindow++;
 			}
-			_maxPeekWindow.push_back(2 * (currentHalfWindow - 1) + 1);
+			peek.width = 2 * (currentHalfWindow - 1) + 1;
 			int peekwith;
-			_maxPeekToValey.push_back(getPeekToValey(data, peekIndex, currentHalfWindow - 1, peekwith));
-			_peekWidth.push_back(peekwith);
+			peek.peekToValey = getPeekToValey(data, peekIndex, currentHalfWindow - 1, peekwith);
+			peek.widthPtV = peekwith;
 
 			while (peekRemains(data, peekIndex, currentHalfWindow, !accoundForEdges) && (2 * currentHalfWindow + 1 < data.size()))
 			{
 				currentHalfWindow++;
 			}
-			_maxPeekWindowNoEdge.push_back(2 * (currentHalfWindow - 1) + 1);
+			peek.widthNoEdge = 2 * (currentHalfWindow - 1) + 1;
+			peeks_.push_back(peek);
 		}
 	}
 }
@@ -196,11 +184,11 @@ double HCMRPeekFinder::getPeekToValey(const std::vector<double> & data, int peek
 	}
 
 	double minValue = minValueRight;
-	peekWidth = minIndexRight - peekIndex;
+	peekWidth = 2 * (minIndexRight - peekIndex) + 1;
 	if (minValueLeft > minValueRight)
 	{
 		minValue = minValueLeft;
-		peekWidth = peekIndex - minIndexLeft;
+		peekWidth = 2 * (peekIndex - minIndexLeft) + 1;
 	}
 	return peekValue - minValue;
 }
@@ -211,12 +199,12 @@ double HCMRPeekFinder::getPeekToValey(const std::vector<double> & data, int peek
 
 
 
-PeekGaussFCN::PeekGaussFCN() : _data(nullptr)
+PeekGaussFCN::PeekGaussFCN() : data_(nullptr)
 {}
 
 void PeekGaussFCN::setData(const std::vector<double> & data)
 {
-	_data = &data;
+	data_ = &data;
 }
 // FCNBase methods implementation
 double PeekGaussFCN::operator()(const std::vector<double> & par) const

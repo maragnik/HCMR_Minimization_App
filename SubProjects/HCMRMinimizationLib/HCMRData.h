@@ -1,5 +1,5 @@
-﻿#ifndef HCMR_DATA_H
-#define HCMR_DATA_H
+﻿#ifndef HCMRdata__H
+#define HCMRdata__H
 
 #include "HCMRSpectrum.h"
 #include "IPlotter.h"
@@ -28,4 +28,4 @@ public:
 	static Plotter* fplotter;
 };
 
-#endif // HCMR_DATA_H
+#endif // HCMRdata__H

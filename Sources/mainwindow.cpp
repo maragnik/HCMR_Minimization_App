@@ -37,11 +37,6 @@ void MainWindow::myplot()
 
 	_peekFinder.setData(_data.getSpectum().getDataVector());
 	_peekFinder.findAllPeaks(_data.getSpectum().getDataVector());
-	std::vector<double> data = _data.getSpectum().getDataVector();
-	//std::vector<double> logData = peekFinder.makeLogarithmic(_data.getSpectum().getDataVector());
-	//std::vector<double> smoothLogData = peekFinder.smooth(logData, 10);
-
-	_peekFinder.findAllPeaks(data);
 	peekConfigChanged(0);
 }
 
@@ -60,9 +55,19 @@ void MainWindow::browseForDataFile()
 void MainWindow::setDataYAxisScaleType(bool isChecked)
 {
 	if (!isChecked)
+	{
 		ui->customPlot->yAxis->setScaleType(QCPAxis::stLinear);
+		QSharedPointer<QCPAxisTicker> ticker(new QCPAxisTicker);
+		ui->customPlot->yAxis->setTicker(ticker);
+	}
+
 	else
+	{
 		ui->customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+		QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+		ui->customPlot->yAxis->setTicker(logTicker);
+	}
+
 
 	ui->customPlot->replot();
 
@@ -78,11 +83,15 @@ void MainWindow::peekConfigChanged(int val)
 	_peekFinder.choosePeaks(minPeekRange, minPeekRangeNoEdge, minPeekToValey, minPeekWidth);
 	ui->customPlot->addGraph();
 	_plotter.setUpForPeekPlot();
-	_plotter.plotPeeksToData(_data.getSpectum().getDataVector(), _peekFinder._finalPeekIndexes);
+	_plotter.plotPeeksToData(_data.getSpectum().getDataVector(), _peekFinder.finalPeeks_);
 
 	ui->list_peeks->clear();
-	for (int i = 0; i < _peekFinder._finalPeekIndexes.size(); ++i)
+	for (int i = 0; i < _peekFinder.finalPeeks_.size(); ++i)
 	{
-		ui->list_peeks->addItem(QString::number(_peekFinder._finalPeekIndexes[i]) + "  " + QString::number(_peekFinder._finalPeekWidths[i]));
+		ui->list_peeks->addItem(QString::number(_peekFinder.finalPeeks_[i].channel) + "  " +
+			QString::number(_peekFinder.finalPeeks_[i].widthNoEdge) + "  " +
+			QString::number(_peekFinder.finalPeeks_[i].width) + "  " +
+			QString::number(_peekFinder.finalPeeks_[i].widthPtV) + "  " +
+			QString::number(_peekFinder.finalPeeks_[i].peekToValey));
 	}
 }

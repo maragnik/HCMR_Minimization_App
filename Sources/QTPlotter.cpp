@@ -17,14 +17,14 @@ void QTPlotter::plot(const HCMRSpectrum& spectrum, int graphNum)
 	plot(spectrum.getDataVector(), 0, graphNum);
 }
 
-void QTPlotter::plotPeeksToData(std::vector<double> data, std::vector<int> peekIntexes)
+void QTPlotter::plotPeeksToData(std::vector<double> data, std::vector<HCMRPeek> peeks)
 {
 	QVector<double> y;
 	QVector<double> x;
-	for (int i = 0; i < peekIntexes.size(); ++i)
+	for (int i = 0; i < peeks.size(); ++i)
 	{
-		x.push_back(peekIntexes[i]);
-		y.push_back(data.at(peekIntexes[i]));
+		x.push_back(peeks[i].channel);
+		y.push_back(data.at(peeks[i].channel));
 	}
 	_customPlot->graph(_currentGraph)->setData(x, y);
 	_customPlot->replot();

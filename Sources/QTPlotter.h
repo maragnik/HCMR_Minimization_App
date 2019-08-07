@@ -4,6 +4,7 @@
 #include "qcustomplot.h"
 #include <vector>
 #include "IPlotter.h"
+#include "HCMRPeekFinder.h"
 
 class QTPlotter : public Plotter
 {
@@ -14,7 +15,7 @@ public:
 	void plot(const HCMRSpectrum& spectrum, int graphNum);
 	void plot(std::vector<double> vector, int startChannel, int graphNum) override;
 	void plot(std::vector<double> vector, std::vector<int> x, std::vector<int> y, int graphNum) override;
-	void plotPeeksToData(std::vector<double> data, std::vector<int> peekIntexes);
+	void plotPeeksToData(std::vector<double> data, std::vector<HCMRPeek> peeks);
 	void plotRowData(std::vector<double> data);
 
 	void setUpForRowDataPlot();
