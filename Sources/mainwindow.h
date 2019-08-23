@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "MyQtData.h"
 #include "HCMRData.h"
 #include "HCMRPeekFinder.h"
 #include "QTPlotter.h"
@@ -20,17 +21,24 @@ public:
 	~MainWindow();
 
 	void myplot();
+	void dataFileAdded();
 
 private slots:
 	void browseForDataFile();
 	void setDataYAxisScaleType(bool isChecked);
 	void peekConfigChanged(int val);
+	void peekConfigChanged(double val);
+	void peekConfigChanged();
+	void dataSelectionChanged(int selectedIndex);
+	void removeSelectedDataFile();
+	void removeAllDataFiles();
 
 private:
 	Ui::MainWindow* ui;
 	HCMRData _data;
-	HCMRPeekFinder _peekFinder;
-	QTPlotter _plotter;
+	MyQtData myQtData_;
+	HCMRPeekFinder peekFinder_;
+	QTPlotter plotter_;
 };
 
 #endif // MAINWINDOW_H

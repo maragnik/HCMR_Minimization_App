@@ -15,6 +15,7 @@ public:
 	static void setPlotter(Plotter* plotter);
 	static void removePlotter();
 public:
+	long long _id;
 	HCMRSpectrum _spectrum;
 	bool _isCalibrated;
 	uint16_t _numOfChanels;
@@ -24,8 +25,11 @@ public:
 	std::string _timeCollected;
 	uint16_t _liveMeassurementDuration; //sec
 	uint16_t _realMeassurementDuration; //sec
-	std::vector<std::string> _sourceFileInfo;
+	std::string _filePath;
+	std::string _fileName;
 	static Plotter* fplotter;
+private:
+	static int nextID;
 };
 
 #endif // HCMRdata__H

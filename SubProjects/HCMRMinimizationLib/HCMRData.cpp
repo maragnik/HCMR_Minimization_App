@@ -2,7 +2,9 @@
 #include "HCMRParser.h"
 #include "loguru.h"
 
-HCMRData::HCMRData() : _spectrum() {}
+HCMRData::HCMRData() : _spectrum(), _id(-1) {}
+
+int HCMRData::nextID = 0;
 
 const HCMRSpectrum& HCMRData::getSpectum() const
 {
@@ -25,19 +27,8 @@ void HCMRData::print() const
 {
 	printf("=============================START OF DATA PRINTING=================================\n");
 	printf("Printing Data initiated from spectrum with name: %s\n", _spectrum.getName().c_str());
-	if (_sourceFileInfo.size() == 3)
-	{
-		printf("Source file name is------------------------: %s\n", (_sourceFileInfo[0] + _sourceFileInfo[1]).c_str());
-		printf("It is located in path----------------------: %s\n", (_sourceFileInfo[2]).c_str());
-	}
-	else if (_sourceFileInfo.size() == 2)
-	{
-		printf("Source file name is------------------------: %s\n", (_sourceFileInfo[0] + _sourceFileInfo[1]).c_str());
-	}
-	else
-	{
-		printf("Source file name is------------------------: %s\n", (_sourceFileInfo[0]).c_str());
-	}
+	printf("Source file name is------------------------: %s\n", _fileName.c_str());
+	printf("It is located in path----------------------: %s\n", _filePath.c_str());
 
 	printf("-----------------------------------------------------------------------------------\n");
 	if (_isCalibrated)
@@ -60,12 +51,19 @@ void HCMRData::print() const
 	printf("=============================END OF DATA PRINTING==================================\n");
 }
 
-void HCMRData::fillDataFromSpeFile(const std::string & file)
+void HCMRData::fillDataFromSpeFile(const std::string& file)
 {
 	HCMRParser parser;
 	parser.parseSpeDataFile(file, this);
-	_sourceFileInfo = parser.splitPath(file);
-	_spectrum.setName(_sourceFileInfo.at(0));
+	std::string name;
+	std::string filename;
+	std::string path;
+	parser.splitPath(file, &filename, &name, &path);
+	_spectrum.setName(name);
+	_filePath = path;
+	_fileName = filename;
+	_id = nextID;
+	nextID++;
 }
 
 void HCMRData::findPeeks()

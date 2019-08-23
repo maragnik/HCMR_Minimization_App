@@ -1,5 +1,5 @@
-﻿#ifndef HCMR_PEEKFINDER_H
-#define HCMR_PEEKFINDER_H
+﻿#ifndef HCMRpeekFinder__H
+#define HCMRpeekFinder__H
 
 #include "Minuit2/FCNBase.h"
 #include "HCMRSpectrum.h"
@@ -8,6 +8,7 @@
 struct HCMRPeek
 {
 	uint32_t channel = 0;
+	double value = 0;
 	uint16_t widthNoEdge = 0;
 	uint16_t width = 0;
 	uint16_t widthPtV = 0;
@@ -36,6 +37,7 @@ public:
 	void setData(const std::vector<double>& data);
 	void findPeeks();
 	void findAllPeaks(const std::vector<double>& data);
+	void correctWidthNoEdgeValues();
 	void choosePeaks(int minPeekWindow, int minPeekWindowNoEdges, double minPeekToValey, int minPeekWidth);
 	bool isPeek(const std::vector<double>& data, int index);
 	double getPeekToValey(const std::vector<double>& data, int peekIndex, int halfWindow, int& peekWidth);

@@ -89,7 +89,7 @@ void HCMRPeekFinder::choosePeaks(int minPeekWindow, int minPeekWindowNoEdges, do
 	{
 		if (peeks_[i].width >= minPeekWindow &&
 			peeks_[i].widthNoEdge >= minPeekWindowNoEdges &&
-			peeks_[i].peekToValey >= minPeekToValey &&
+			peeks_[i].peekToValey * 100. / peeks_[i].value >= minPeekToValey &&
 			peeks_[i].widthPtV >= minPeekWidth)
 		{
 			finalPeeks_.push_back(peeks_[i]);
@@ -108,7 +108,7 @@ void HCMRPeekFinder::findAllPeaks(const std::vector<double>& data)
 		{
 			HCMRPeek peek;
 			peek.channel = peekIndex;
-
+			peek.value = data[peekIndex];
 			int currentHalfWindow = 2;
 			while (peekRemains(data, peekIndex, currentHalfWindow, accoundForEdges) && (2 * currentHalfWindow + 1 < data.size()))
 			{
@@ -127,6 +127,24 @@ void HCMRPeekFinder::findAllPeaks(const std::vector<double>& data)
 			peeks_.push_back(peek);
 		}
 	}
+	correctWidthNoEdgeValues();
+}
+
+void HCMRPeekFinder::correctWidthNoEdgeValues()
+{
+	for (int i = 0; i < peeks_.size(); ++i)
+	{
+		int j = i + 1;
+		while ((j != peeks_.size()) && (peeks_[j].channel < (peeks_[i].channel + peeks_[i].widthNoEdge / 2)))
+		{
+			if (peeks_[j].value > peeks_[i].value)
+			{
+				peeks_[i].widthNoEdge = 2 * (peeks_[j].channel - peeks_[i].channel - 1) + 1;
+			}
+			j++;
+		}
+	}
+
 }
 
 std::vector<double> HCMRPeekFinder::makeLogarithmic(const std::vector<double> & data)

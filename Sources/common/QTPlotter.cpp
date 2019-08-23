@@ -1,4 +1,6 @@
 ﻿#include "QTPlotter.h"
+#include <algorithm>
+
 QTPlotter::QTPlotter(QCustomPlot* customPlot) :
 	_customPlot(customPlot),
 	_currentGraph(0),
@@ -17,19 +19,38 @@ void QTPlotter::plot(const HCMRSpectrum& spectrum, int graphNum)
 	plot(spectrum.getDataVector(), 0, graphNum);
 }
 
-void QTPlotter::plotPeeksToData(std::vector<double> data, std::vector<HCMRPeek> peeks)
+void QTPlotter::plotPeeks(std::vector<HCMRPeek> peeks)
 {
 	QVector<double> y;
 	QVector<double> x;
 	for (int i = 0; i < peeks.size(); ++i)
 	{
 		x.push_back(peeks[i].channel);
-		y.push_back(data.at(peeks[i].channel));
+		y.push_back(peeks[i].value);
 	}
 	_customPlot->graph(_currentGraph)->setData(x, y);
 	_customPlot->replot();
 	QApplication::processEvents();
 
+}
+void QTPlotter::plotFullPeeks(const std::vector<double>& data, std::vector<HCMRPeek> peeks)
+{
+	QVector<double> y;
+	QVector<double> x;
+	for (int i = 1; i < peeks.size(); ++i)
+	{
+		int minJ = std::max(static_cast<int>(peeks[i].channel) - peeks[i].widthPtV / 2, 0);
+		int maxJ = std::min(static_cast<int>(peeks[i].channel) + peeks[i].widthPtV / 2, static_cast<int>(data.size() - 1));
+		for (int j = minJ; j <= maxJ; ++j)
+		{
+			x.push_back(j);
+			y.push_back(data[j]);
+		}
+
+	}
+	_customPlot->graph(_currentGraph)->setData(x, y);
+	_customPlot->replot();
+	QApplication::processEvents();
 }
 
 void QTPlotter::plotRowData(std::vector<double> data)

@@ -40,8 +40,9 @@ void HCMRParser::parseLine(const std::string& line, std::vector<T>& outVector)
 
 bool HCMRParser::parseSpeDataFile(const std::string& file, HCMRData* data)
 {
-	std::vector<std::string> sourceFileInfo = splitPath(file);
-	std::string filename = (sourceFileInfo.size() == 3) ? sourceFileInfo[0] + sourceFileInfo[1] : sourceFileInfo[0];
+
+	std::string filename;
+	splitPath(file, &filename);
 
 	LOG_F(INFO, "Parsing file %s", file.c_str());
 	_stream.open(file);
@@ -176,26 +177,31 @@ bool HCMRParser::parseSpeDataFile(const std::string& file, HCMRData* data)
 	}
 }
 
-std::vector<std::string> HCMRParser::splitPath(const std::string & file)
+void HCMRParser::splitPath(const std::string & file, std::string * filename, std::string * name, std::string * path, std::string * fileExtention)
 {
-	std::vector<std::string> name;
+	if (name != nullptr) * name = "";
+	if (filename != nullptr) * filename = "";
+	if (fileExtention != nullptr) * fileExtention = "";
+	if (path != nullptr) * path = "";
+
 	size_t pos = std::min(file.find_last_of("\\"), file.find_last_of("/"));
 	size_t posExt = file.find_last_of(".");
 	if (file.empty() || (pos == std::string::npos))
 	{
-		name.push_back("Undefined");
-		return name;
+		if (name != nullptr) * name = "Undefined";
+		if (filename != nullptr) * filename = "Undefined";
+		return;
 	}
 
 	if (pos < posExt)
 	{
-		name.push_back(file.substr(pos + 1, posExt - pos - 1));
-		name.push_back(file.substr(posExt));
-		name.push_back(file.substr(0, pos));
+		if (name != nullptr) * name = file.substr(pos + 1, posExt - pos - 1);
+		if (filename != nullptr) * filename = file.substr(pos + 1);
+		if (fileExtention != nullptr) * fileExtention = file.substr(posExt);
+		if (path != nullptr) * path = file.substr(0, pos);
 	}
 	else
 	{
-		name.push_back(file.substr(pos + 1));
+		if (name != nullptr) * name = file.substr(pos + 1);
 	}
-	return name;
 }
