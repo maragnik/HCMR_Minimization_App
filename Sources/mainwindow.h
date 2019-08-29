@@ -19,7 +19,14 @@ class MainWindow : public QMainWindow
 public:
 	explicit MainWindow(QWidget* parent = nullptr);
 	~MainWindow();
+private:
+	Ui::MainWindow* ui;
+	QTPlotter plotter_;
 
+	//============
+	//  Data Tag  
+	// ===========
+public:
 	void myplot();
 	void dataFileAdded();
 
@@ -34,11 +41,10 @@ private slots:
 	void removeAllDataFiles();
 
 private:
-	Ui::MainWindow* ui;
 	HCMRData _data;
 	MyQtData myQtData_;
 	HCMRPeekFinder peekFinder_;
-	QTPlotter plotter_;
+
 };
 
 #endif // MAINWINDOW_H

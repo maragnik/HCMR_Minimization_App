@@ -14,16 +14,13 @@ MainWindow::MainWindow(QWidget* parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	ui->frame_plot1->hide();
-	ui->frame_plot2->hide();
+	ui->frame_plot->hide();
 	ui->groupBox_file_info->hide();
 	ui->toolBox->setItemEnabled(1, false);
 	ui->toolBox->setItemEnabled(2, false);
-	ui->customPlot->setInteraction(QCP::iRangeDrag, true);
-	ui->customPlot->setInteraction(QCP::iRangeZoom, true);
-	ui->customPlot2->setInteraction(QCP::iRangeDrag, true);
-	ui->customPlot2->setInteraction(QCP::iRangeZoom, true);
-
+	ui->customPlotData->setInteraction(QCP::iRangeDrag, true);
+	ui->customPlotData->setInteraction(QCP::iRangeZoom, true);
+	ui->customPlotData->xAxis2->setVisible(true);
 
 	connect(ui->button_add_data_file, &QAbstractButton::clicked, this, &MainWindow::browseForDataFile);
 	connect(ui->button_remove_all_data_files, SIGNAL(clicked()), this, SLOT(removeAllDataFiles()));
@@ -34,6 +31,8 @@ MainWindow::MainWindow(QWidget* parent) :
 	connect(ui->spinBox_minPeekToValey, SIGNAL(valueChanged(double)), this, SLOT(peekConfigChanged(double)));
 	connect(ui->spinBox_minPeekWidth, SIGNAL(valueChanged(int)), this, SLOT(peekConfigChanged(int)));
 	connect(ui->list_open_data_files, SIGNAL(currentRowChanged(int)), this, SLOT(dataSelectionChanged(int)));
+
+	connect(ui->customPlotData->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlotData->xAxis2, SLOT(setRange(QCPRange)));
 }
 
 MainWindow::~MainWindow()
@@ -43,9 +42,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::dataSelectionChanged(int selectedIndex)
 {
-	printf("nik %d\n", selectedIndex);
 	myQtData_.setSelectedListItem(selectedIndex);
 	HCMRData* selectedData = myQtData_.getSelectedListItem();
+
+	// Fill the data info fields
 	ui->lineEdit_data_file_name->setText(QString::fromStdString(selectedData->_fileName));
 	ui->lineEdit_data_file_path->setText(QString::fromStdString(selectedData->_filePath));
 	ui->lineEdit_data_numOfChannels->setText(QString::number(selectedData->_numOfChanels));
@@ -62,6 +62,14 @@ void MainWindow::dataSelectionChanged(int selectedIndex)
 	{
 		ui->lineEdit_data_calibration_slop->setText("Not Calibrated");
 		ui->lineEdit_data_calibration_offset->setText("Not Calibrated");
+	}
+
+	// Fill the graph
+	plotter_.setGraph(ui->customPlotData);
+	int numOfGraphs = ui->customPlotData->graphCount();
+	if (numOfGraphs == 0)
+	{
+		ui->customPlotData->addGraph();
 	}
 
 }
@@ -91,7 +99,7 @@ void MainWindow::dataFileAdded()
 	// Show plot and info
 	if (ui->list_open_data_files->count() == 1)
 	{
-		ui->frame_plot2->show();
+		ui->frame_plot->show();
 		ui->groupBox_file_info->show();
 	}
 }
@@ -126,7 +134,7 @@ void MainWindow::removeSelectedDataFile()
 void MainWindow::removeAllDataFiles()
 {
 	ui->list_open_data_files->clear();
-	ui->frame_plot2->hide();
+	ui->frame_plot->hide();
 	ui->groupBox_file_info->hide();
 	myQtData_.clearDataList();
 
@@ -134,7 +142,7 @@ void MainWindow::removeAllDataFiles()
 
 void MainWindow::myplot()
 {
-	plotter_.setGraph(ui->customPlot);
+	plotter_.setGraph(ui->customPlotData);
 
 	plotter_.setAxisLabels("Energy Channel", "Counts");
 	plotter_.setUpForRowDataPlot();
@@ -184,20 +192,20 @@ void MainWindow::setDataYAxisScaleType(bool isChecked)
 {
 	if (!isChecked)
 	{
-		ui->customPlot->yAxis->setScaleType(QCPAxis::stLinear);
+		ui->customPlotData->yAxis->setScaleType(QCPAxis::stLinear);
 		QSharedPointer<QCPAxisTicker> ticker(new QCPAxisTicker);
-		ui->customPlot->yAxis->setTicker(ticker);
+		ui->customPlotData->yAxis->setTicker(ticker);
 	}
 
 	else
 	{
-		ui->customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+		ui->customPlotData->yAxis->setScaleType(QCPAxis::stLogarithmic);
 		QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-		ui->customPlot->yAxis->setTicker(logTicker);
+		ui->customPlotData->yAxis->setTicker(logTicker);
 	}
 
 
-	ui->customPlot->replot();
+	ui->customPlotData->replot();
 
 }
 
@@ -217,7 +225,7 @@ void MainWindow::peekConfigChanged()
 	int minPeekWidth = ui->spinBox_minPeekWidth->value();
 
 	peekFinder_.choosePeaks(minPeekRange, minPeekRangeNoEdge, minPeekToValey, minPeekWidth);
-	ui->customPlot->addGraph();
+	ui->customPlotData->addGraph();
 	plotter_.setUpForPeekPlot();
 	plotter_.plotPeeks(peekFinder_.finalPeeks_);
 	//plotter_.plotFullPeeks(_data.getSpectum().getDataVector(), peekFinder_.finalPeeks_);

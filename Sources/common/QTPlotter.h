@@ -10,7 +10,7 @@ class QTPlotter : public Plotter
 {
 public:
 	QTPlotter();
-	QTPlotter(QCustomPlot* customPlot);
+	QTPlotter(QCustomPlot* customPlotData);
 
 	void plot(const HCMRSpectrum& spectrum, int graphNum);
 	void plot(std::vector<double> vector, int startChannel, int graphNum) override;
@@ -23,7 +23,7 @@ public:
 	void setUpForPeekPlot();
 	void setAxisLabels(QString xlabel, QString yLabel);
 
-	void setGraph(QCustomPlot* customPlot);
+	void setGraph(QCustomPlot* customPlotData);
 
 private:
 	QCustomPlot* _customPlot;

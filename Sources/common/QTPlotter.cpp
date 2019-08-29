@@ -1,8 +1,8 @@
 ﻿#include "QTPlotter.h"
 #include <algorithm>
 
-QTPlotter::QTPlotter(QCustomPlot* customPlot) :
-	_customPlot(customPlot),
+QTPlotter::QTPlotter(QCustomPlot* customPlotData) :
+	_customPlot(customPlotData),
 	_currentGraph(0),
 	_souldScale(true)
 {}
@@ -190,7 +190,7 @@ void QTPlotter::plot(std::vector<double> vector, std::vector<int> x, std::vector
 
 }
 
-void QTPlotter::setGraph(QCustomPlot * customPlot)
+void QTPlotter::setGraph(QCustomPlot * customPlotData)
 {
-	_customPlot = customPlot;
+	_customPlot = customPlotData;
 }
