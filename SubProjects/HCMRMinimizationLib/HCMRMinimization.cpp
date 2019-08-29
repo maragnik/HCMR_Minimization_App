@@ -4,7 +4,7 @@ HCMRMinimization::HCMRMinimization() {}
 
 void HCMRMinimization::addData(const std::string& file)
 {
-	_data.fillDataFromSpeFile(file);
+	data_.fillDataFromSpeFile(file);
 }
 
 void HCMRMinimization::addUnitaryToModel(const std::string& file)

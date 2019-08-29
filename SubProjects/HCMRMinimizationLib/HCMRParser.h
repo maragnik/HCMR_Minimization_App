@@ -18,7 +18,7 @@ public:
 
 	template<class T>
 	void parseLine(const std::string& line, std::vector<T>& outVector);
-	std::vector<std::string> splitPath(const std::string& file);
+	void splitPath(const std::string& file, std::string* filename, std::string* name = nullptr, std::string* path = nullptr, std::string* fileExtention = nullptr);
 
 
 private:

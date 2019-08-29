@@ -2,17 +2,17 @@
 #include <algorithm>
 #include "loguru.h"
 
-HCMRSpectrum::HCMRSpectrum() :_dataVector(), _name("") {}
+HCMRSpectrum::HCMRSpectrum() :data_Vector(), _name("") {}
 
-HCMRSpectrum::HCMRSpectrum(std::vector<double> dataVector, std::string name) : _dataVector(dataVector), _name(name) {}
+HCMRSpectrum::HCMRSpectrum(std::vector<double> dataVector, std::string name) : data_Vector(dataVector), _name(name) {}
 
 void HCMRSpectrum::addCountsInChannel(uint32_t channelNum, double counts)
 {
-	if (_dataVector.size() < channelNum + 1)
+	if (data_Vector.size() < channelNum + 1)
 	{
-		_dataVector.resize(channelNum + 1, 0);
+		data_Vector.resize(channelNum + 1, 0);
 	}
-	_dataVector.at(channelNum) = counts;
+	data_Vector.at(channelNum) = counts;
 }
 
 void HCMRSpectrum::setName(std::string name)
@@ -22,12 +22,12 @@ void HCMRSpectrum::setName(std::string name)
 
 void HCMRSpectrum::setSpectrum(std::vector<double> dataVector)
 {
-	_dataVector = dataVector;
+	data_Vector = dataVector;
 }
 
 double HCMRSpectrum::getCountsInChannel(uint32_t channelNum) const
 {
-	if (_dataVector.size() < channelNum + 1)
+	if (data_Vector.size() < channelNum + 1)
 	{
 		LOG_F(WARNING, "Trying to access channel #%d in %s spectrum, that is out of range.", channelNum, _name.c_str());
 		LOG_F(WARNING, "Returning zero counts");
@@ -35,7 +35,7 @@ double HCMRSpectrum::getCountsInChannel(uint32_t channelNum) const
 	}
 	else
 	{
-		return _dataVector.at(channelNum);
+		return data_Vector.at(channelNum);
 	}
 }
 
@@ -46,17 +46,17 @@ std::string HCMRSpectrum::getName() const
 
 const std::vector<double>& HCMRSpectrum::getDataVector() const
 {
-	return _dataVector;
+	return data_Vector;
 }
 
 uint32_t HCMRSpectrum::size() const
 {
-	return _dataVector.size();
+	return data_Vector.size();
 }
 
 void HCMRSpectrum::clearSpectrum()
 {
-	_dataVector.clear();
+	data_Vector.clear();
 }
 
 void HCMRSpectrum::print() const
@@ -64,7 +64,7 @@ void HCMRSpectrum::print() const
 	printf("Printing Spectrum with name: %s\n", _name.c_str());
 	printf("----------------------------------------------\n");
 	int count = 0;
-	for (double value : _dataVector)
+	for (double value : data_Vector)
 	{
 		if (count > 8)
 		{

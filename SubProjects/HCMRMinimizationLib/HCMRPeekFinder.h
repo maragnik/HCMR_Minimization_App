@@ -1,9 +1,19 @@
-﻿#ifndef HCMR_PEEKFINDER_H
-#define HCMR_PEEKFINDER_H
+﻿#ifndef HCMRpeekFinder__H
+#define HCMRpeekFinder__H
 
 #include "Minuit2/FCNBase.h"
 #include "HCMRSpectrum.h"
 #include "IPlotter.h"
+
+struct HCMRPeek
+{
+	uint32_t channel = 0;
+	double value = 0;
+	uint16_t widthNoEdge = 0;
+	uint16_t width = 0;
+	uint16_t widthPtV = 0;
+	double peekToValey = 0.F;
+};
 
 class PeekGaussFCN : public ROOT::Minuit2::FCNBase
 {
@@ -16,7 +26,7 @@ public:
 	void setData(const std::vector<double>& data);
 
 private:
-	const std::vector<double>* _data;
+	const std::vector<double>* data_;
 
 };
 
@@ -27,6 +37,7 @@ public:
 	void setData(const std::vector<double>& data);
 	void findPeeks();
 	void findAllPeaks(const std::vector<double>& data);
+	void correctWidthNoEdgeValues();
 	void choosePeaks(int minPeekWindow, int minPeekWindowNoEdges, double minPeekToValey, int minPeekWidth);
 	bool isPeek(const std::vector<double>& data, int index);
 	double getPeekToValey(const std::vector<double>& data, int peekIndex, int halfWindow, int& peekWidth);
@@ -35,18 +46,14 @@ public:
 	std::vector<double> makeLogarithmic(const std::vector<double>& data);
 	std::vector<double> smooth(const std::vector<double>& data, int width);
 
-	PeekGaussFCN _fcn;
-	std::vector<int> _finalPeekIndexes;
-	std::vector<int> _finalPeekWidths;
+	PeekGaussFCN fcn_;
+	std::vector<HCMRPeek> finalPeeks_;
+
 private:
-	const std::vector<double>* _data;
+	const std::vector<double>* data_;
 
 	//Peek data
-	std::vector<int> _peekIndexes;
-	std::vector<int> _maxPeekWindow;
-	std::vector<int> _maxPeekWindowNoEdge;
-	std::vector<double> _maxPeekToValey;
-	std::vector<double> _peekWidth;
+	std::vector<HCMRPeek> peeks_;
 };
 
 #endif //HCMR_PICKFINDER_H

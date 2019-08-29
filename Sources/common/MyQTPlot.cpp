@@ -1,39 +1,73 @@
-﻿#include "QTPlotter.h"
-QTPlotter::QTPlotter(QCustomPlot* customPlot) :
-	_customPlot(customPlot),
+﻿#include "MyQTPlot.h"
+#include <algorithm>
+
+MyQTPlot::MyQTPlot(QCustomPlot* customPlotData) :
+	_customPlot(customPlotData),
 	_currentGraph(0),
-	_souldScale(true)
+	_shouldScale(true)
 {}
 
-QTPlotter::QTPlotter() :
+MyQTPlot::MyQTPlot() :
 	_customPlot(nullptr),
 	_currentGraph(0),
-	_souldScale(true)
+	_shouldScale(true)
 {
 
 }
-void QTPlotter::plot(const HCMRSpectrum& spectrum, int graphNum)
+void MyQTPlot::plot(const HCMRSpectrum& spectrum, int graphNum)
 {
 	plot(spectrum.getDataVector(), 0, graphNum);
 }
 
-void QTPlotter::plotPeeksToData(std::vector<double> data, std::vector<int> peekIntexes)
+void MyQTPlot::plotPeeks(std::vector<HCMRPeek> peeks)
 {
 	QVector<double> y;
 	QVector<double> x;
-	for (int i = 0; i < peekIntexes.size(); ++i)
+	for (int i = 0; i < peeks.size(); ++i)
 	{
-		x.push_back(peekIntexes[i]);
-		y.push_back(data.at(peekIntexes[i]));
+		x.push_back(peeks[i].channel);
+		y.push_back(peeks[i].value);
 	}
 	_customPlot->graph(_currentGraph)->setData(x, y);
 	_customPlot->replot();
 	QApplication::processEvents();
 
 }
-
-void QTPlotter::plotRowData(std::vector<double> data)
+void MyQTPlot::plotFullPeeks(const std::vector<double>& data, std::vector<HCMRPeek> peeks)
 {
+	QVector<double> y;
+	QVector<double> x;
+	for (int i = 1; i < peeks.size(); ++i)
+	{
+		int minJ = std::max(static_cast<int>(peeks[i].channel) - peeks[i].widthPtV / 2, 0);
+		int maxJ = std::min(static_cast<int>(peeks[i].channel) + peeks[i].widthPtV / 2, static_cast<int>(data.size() - 1));
+		for (int j = minJ; j <= maxJ; ++j)
+		{
+			x.push_back(j);
+			y.push_back(data[j]);
+		}
+
+	}
+	_customPlot->graph(_currentGraph)->setData(x, y);
+	_customPlot->replot();
+	QApplication::processEvents();
+}
+
+void MyQTPlot::plotRowData(std::vector<double> data, int graphNumber)
+{
+	int numOfGraphs = _customPlot->graphCount();
+	while (numOfGraphs < graphNumber + 1)
+	{
+		_customPlot->addGraph();
+		numOfGraphs++;
+	}
+	setAxisLabels("Energy Channel", "Counts");
+	_currentGraph = graphNumber;
+	_shouldScale = true;
+	_customPlot->graph(_currentGraph)->setLineStyle(QCPGraph::lsLine);
+	_customPlot->graph(_currentGraph)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
+	_customPlot->graph(_currentGraph)->setPen(QPen(Qt::black));
+
 	double maxYValue = 0;
 	double minYValue = 20000;
 	double minXValue = 0;
@@ -49,40 +83,33 @@ void QTPlotter::plotRowData(std::vector<double> data)
 	}
 
 	_customPlot->graph(_currentGraph)->setData(x, y);
-	if (_souldScale)
+	if (_shouldScale)
 	{
 		_customPlot->xAxis->setRange(minXValue, maxXValue);
 		_customPlot->yAxis->setRange(minYValue, maxYValue + maxYValue * 0.1);
 	}
+	setInitialPlotRange(_customPlot->xAxis->range(), _customPlot->yAxis->range());
+
 	_customPlot->replot();
 	QApplication::processEvents();
 }
 
-void QTPlotter::setUpForRowDataPlot()
-{
-	_currentGraph = 0;
-	_souldScale = true;
-	_customPlot->graph(_currentGraph)->setLineStyle(QCPGraph::lsLine);
-	_customPlot->graph(_currentGraph)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
-	_customPlot->graph(_currentGraph)->setPen(QPen(Qt::black));
-	_customPlot->replot();
-}
-void QTPlotter::setUpForPeekPlot()
+void MyQTPlot::setUpForPeekPlot()
 {
 	_currentGraph = 1;
-	_souldScale = false;
+	_shouldScale = false;
 	_customPlot->graph(_currentGraph)->setLineStyle(QCPGraph::lsNone);
 	_customPlot->graph(_currentGraph)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::red, 7));
 	_customPlot->replot();
 }
-void QTPlotter::setAxisLabels(QString xlabel, QString yLabel)
+void MyQTPlot::setAxisLabels(QString xlabel, QString yLabel)
 {
 	_customPlot->xAxis->setLabel(xlabel);
 	_customPlot->yAxis->setLabel(yLabel);
 	_customPlot->replot();
 }
 
-void QTPlotter::plot(std::vector<double> vector, int startChannel, int graphNum)
+void MyQTPlot::plot(std::vector<double> vector, int startChannel, int graphNum)
 {
 	// generate some data:
 	double maxValue = 0;
@@ -130,7 +157,7 @@ void QTPlotter::plot(std::vector<double> vector, int startChannel, int graphNum)
 	QApplication::processEvents();
 }
 
-void QTPlotter::plot(std::vector<double> vector, std::vector<int> x, std::vector<int> y, int graphNum)
+void MyQTPlot::plot(std::vector<double> vector, std::vector<int> x, std::vector<int> y, int graphNum)
 {
 	QVector<double> qx;
 	QVector<double> qy;
@@ -169,7 +196,35 @@ void QTPlotter::plot(std::vector<double> vector, std::vector<int> x, std::vector
 
 }
 
-void QTPlotter::setGraph(QCustomPlot * customPlot)
+void MyQTPlot::setCustomPlot(QCustomPlot * customPlotData)
 {
-	_customPlot = customPlot;
+	_customPlot = customPlotData;
+}
+
+QCustomPlot* MyQTPlot::getCustomPlot()
+{
+	return _customPlot;
+}
+
+void MyQTPlot::setInitialPlotRange(QCPRange XRange, QCPRange YRange)
+{
+	_intialPlotXRange = XRange;
+	_intialPlotYRange = YRange;
+}
+
+void MyQTPlot::resetInitialPlotRange()
+{
+	_customPlot->xAxis->setRange(_intialPlotXRange);
+	_customPlot->yAxis->setRange(_intialPlotYRange);
+	_customPlot->replot();
+}
+
+QCPRange MyQTPlot::getInitialPlotXRange()
+{
+	return _intialPlotXRange;
+}
+
+QCPRange MyQTPlot::getInitialPlotYRange()
+{
+	return _intialPlotYRange;
 }

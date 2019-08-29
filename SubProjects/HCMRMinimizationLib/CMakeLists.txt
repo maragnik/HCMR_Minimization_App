@@ -6,7 +6,8 @@ set(HCMRMinimization_sources
 		HCMRModel.cpp
 		HCMRData.cpp
 		HCMRParser.cpp
-		HCMRPeekFinder.cpp)
+		HCMRPeekFinder.cpp
+		HCMRConfig.cpp)
 
 set(HCMRMinimization_headers 
         common_definitions.h
@@ -17,7 +18,8 @@ set(HCMRMinimization_headers
 		HCMRParser.h
 		HCMRPeekFinder.h
 		IPlotter.h
-		IHCMRListener.h)
+		IHCMRListener.h
+		HCMRConfig.h)
 
 # add the executable
 add_library(HCMRMinimizationLib ${HCMRMinimization_sources} ${HCMRMinimization_headers})

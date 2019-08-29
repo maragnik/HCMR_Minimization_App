@@ -11,6 +11,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include_directories (SubProjects/logger
                      Sources
+					 Sources/common
+					 Sources/data
                      SubProjects/HCMRMinimizationLib)
 
 add_definitions(-DPATH_TO_EXTERNALS_STRING=\"${PATH_TO_EXTERNALS}\")
@@ -23,17 +25,20 @@ add_subdirectory(SubProjects/test)
 set(project_sources 
 		Sources/main.cpp 
 		Sources/mainwindow.cpp 
-		Sources/qcustomplot.cpp
-		Sources/QTPlotter.cpp
-		Sources/MyQtListener.cpp)
+		Sources/common/qcustomplot.cpp
+		Sources/common/MyQTPlot.cpp
+		Sources/common/MyQtListener.cpp
+		Sources/data/MyQtData.cpp
+		Sources/data/MyQtDataConfig.cpp)
 		
 set(project_headers 
 		Sources/mainwindow.h 
-		Sources/qcustomplot.h
-		Sources/QTPlotter.h
-		Sources/MyQtListener.h)
-set(other_headers )
-		
+		Sources/common/qcustomplot.h
+		Sources/common/MyQTPlot.h
+		Sources/common/MyQtListener.h
+		Sources/data/MyQtData.h
+		Sources/data/MyQtDataConfig.h)
+
 set(project_ui Sources/mainwindow.ui)
 
 # wrap the ui file to a c++ header
@@ -43,7 +48,7 @@ qt5_wrap_cpp(moc_sources ${project_headers})
 # add the executable
 add_executable(HCMR_Minimization 
 	${project_sources} 
-	${project_headers} ${other_headers}
+	${project_headers}
 	${ui_wrap} 
 	${moc_sources})
 

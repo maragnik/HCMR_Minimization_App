@@ -16,7 +16,7 @@ public:
 	// FCNBase methods implementation
 	double operator()(const std::vector<double>& par) const override;
 	double Up() const override;
-	HCMRData _data;
+	HCMRData data_;
 	HCMRModel _model;
 };
 
