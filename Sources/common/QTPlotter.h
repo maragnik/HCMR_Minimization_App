@@ -17,9 +17,8 @@ public:
 	void plot(std::vector<double> vector, std::vector<int> x, std::vector<int> y, int graphNum) override;
 	void plotPeeks(std::vector<HCMRPeek> peeks);
 	void plotFullPeeks(const std::vector<double>& data, std::vector<HCMRPeek> peeks);
-	void plotRowData(std::vector<double> data);
+	void plotRowData(std::vector<double> data, int graphNumber);
 
-	void setUpForRowDataPlot();
 	void setUpForPeekPlot();
 	void setAxisLabels(QString xlabel, QString yLabel);
 
@@ -28,7 +27,7 @@ public:
 private:
 	QCustomPlot* _customPlot;
 	int _currentGraph;
-	bool _souldScale;
+	bool _shouldScale;
 
 };
 #endif //PLOT_SPECTRUM_H

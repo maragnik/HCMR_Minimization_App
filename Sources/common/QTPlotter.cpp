@@ -4,13 +4,13 @@
 QTPlotter::QTPlotter(QCustomPlot* customPlotData) :
 	_customPlot(customPlotData),
 	_currentGraph(0),
-	_souldScale(true)
+	_shouldScale(true)
 {}
 
 QTPlotter::QTPlotter() :
 	_customPlot(nullptr),
 	_currentGraph(0),
-	_souldScale(true)
+	_shouldScale(true)
 {
 
 }
@@ -53,8 +53,21 @@ void QTPlotter::plotFullPeeks(const std::vector<double>& data, std::vector<HCMRP
 	QApplication::processEvents();
 }
 
-void QTPlotter::plotRowData(std::vector<double> data)
+void QTPlotter::plotRowData(std::vector<double> data, int graphNumber)
 {
+	int numOfGraphs = _customPlot->graphCount();
+	while (numOfGraphs < graphNumber + 1)
+	{
+		_customPlot->addGraph();
+		numOfGraphs++;
+	}
+	setAxisLabels("Energy Channel", "Counts");
+	_currentGraph = graphNumber;
+	_shouldScale = true;
+	_customPlot->graph(_currentGraph)->setLineStyle(QCPGraph::lsLine);
+	_customPlot->graph(_currentGraph)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
+	_customPlot->graph(_currentGraph)->setPen(QPen(Qt::black));
+
 	double maxYValue = 0;
 	double minYValue = 20000;
 	double minXValue = 0;
@@ -70,7 +83,7 @@ void QTPlotter::plotRowData(std::vector<double> data)
 	}
 
 	_customPlot->graph(_currentGraph)->setData(x, y);
-	if (_souldScale)
+	if (_shouldScale)
 	{
 		_customPlot->xAxis->setRange(minXValue, maxXValue);
 		_customPlot->yAxis->setRange(minYValue, maxYValue + maxYValue * 0.1);
@@ -79,19 +92,10 @@ void QTPlotter::plotRowData(std::vector<double> data)
 	QApplication::processEvents();
 }
 
-void QTPlotter::setUpForRowDataPlot()
-{
-	_currentGraph = 0;
-	_souldScale = true;
-	_customPlot->graph(_currentGraph)->setLineStyle(QCPGraph::lsLine);
-	_customPlot->graph(_currentGraph)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
-	_customPlot->graph(_currentGraph)->setPen(QPen(Qt::black));
-	_customPlot->replot();
-}
 void QTPlotter::setUpForPeekPlot()
 {
 	_currentGraph = 1;
-	_souldScale = false;
+	_shouldScale = false;
 	_customPlot->graph(_currentGraph)->setLineStyle(QCPGraph::lsNone);
 	_customPlot->graph(_currentGraph)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::red, 7));
 	_customPlot->replot();

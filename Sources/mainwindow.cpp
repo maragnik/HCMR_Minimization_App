@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget* parent) :
 	ui->toolBox->setItemEnabled(2, false);
 	ui->customPlotData->setInteraction(QCP::iRangeDrag, true);
 	ui->customPlotData->setInteraction(QCP::iRangeZoom, true);
-	ui->customPlotData->xAxis2->setVisible(true);
+	//ui->customPlotData->xAxis2->setVisible(true);
+	setDataYAxisScaleType(ui->checkbox_yAxisScaleType->isChecked());
 
 	connect(ui->button_add_data_file, &QAbstractButton::clicked, this, &MainWindow::browseForDataFile);
 	connect(ui->button_remove_all_data_files, SIGNAL(clicked()), this, SLOT(removeAllDataFiles()));
@@ -66,11 +67,8 @@ void MainWindow::dataSelectionChanged(int selectedIndex)
 
 	// Fill the graph
 	plotter_.setGraph(ui->customPlotData);
-	int numOfGraphs = ui->customPlotData->graphCount();
-	if (numOfGraphs == 0)
-	{
-		ui->customPlotData->addGraph();
-	}
+	plotter_.plotRowData(selectedData->_spectrum.getDataVector(), 0);
+
 
 }
 
@@ -102,6 +100,9 @@ void MainWindow::dataFileAdded()
 		ui->frame_plot->show();
 		ui->groupBox_file_info->show();
 	}
+
+	// Enable ui objects
+	ui->toolBox->setItemEnabled(1, true);
 }
 
 void MainWindow::removeSelectedDataFile()
@@ -133,6 +134,7 @@ void MainWindow::removeSelectedDataFile()
 
 void MainWindow::removeAllDataFiles()
 {
+	ui->toolBox->setItemEnabled(1, false);
 	ui->list_open_data_files->clear();
 	ui->frame_plot->hide();
 	ui->groupBox_file_info->hide();
@@ -144,9 +146,9 @@ void MainWindow::myplot()
 {
 	plotter_.setGraph(ui->customPlotData);
 
-	plotter_.setAxisLabels("Energy Channel", "Counts");
-	plotter_.setUpForRowDataPlot();
-	plotter_.plotRowData(_data.getSpectum().getDataVector());
+
+
+	plotter_.plotRowData(_data.getSpectum().getDataVector(), 0);
 
 	peekFinder_.setData(_data.getSpectum().getDataVector());
 	peekFinder_.findAllPeaks(_data.getSpectum().getDataVector());
