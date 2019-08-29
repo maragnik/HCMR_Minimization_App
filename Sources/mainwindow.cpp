@@ -1,7 +1,7 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "HCMRParser.h"
-#include "QTPlotter.h"
+#include "MyQTPlot.h"
 #include "HCMRPeekFinder.h"
 #include "loguru.h"
 #include <iostream>
@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget* parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+	dataPlot_.setCustomPlot(ui->customPlotData);
 	ui->frame_plot->hide();
 	ui->groupBox_file_info->hide();
 	ui->toolBox->setItemEnabled(1, false);
@@ -22,6 +23,8 @@ MainWindow::MainWindow(QWidget* parent) :
 	ui->customPlotData->setInteraction(QCP::iRangeZoom, true);
 	//ui->customPlotData->xAxis2->setVisible(true);
 	setDataYAxisScaleType(ui->checkbox_yAxisScaleType->isChecked());
+
+
 
 	connect(ui->button_add_data_file, &QAbstractButton::clicked, this, &MainWindow::browseForDataFile);
 	connect(ui->button_remove_all_data_files, SIGNAL(clicked()), this, SLOT(removeAllDataFiles()));
@@ -32,8 +35,9 @@ MainWindow::MainWindow(QWidget* parent) :
 	connect(ui->spinBox_minPeekToValey, SIGNAL(valueChanged(double)), this, SLOT(peekConfigChanged(double)));
 	connect(ui->spinBox_minPeekWidth, SIGNAL(valueChanged(int)), this, SLOT(peekConfigChanged(int)));
 	connect(ui->list_open_data_files, SIGNAL(currentRowChanged(int)), this, SLOT(dataSelectionChanged(int)));
-
+	connect(ui->pushButton_resetScale, SIGNAL(clicked()), this, SLOT(resetDataPlotScale()));
 	connect(ui->customPlotData->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlotData->xAxis2, SLOT(setRange(QCPRange)));
+
 }
 
 MainWindow::~MainWindow()
@@ -66,10 +70,12 @@ void MainWindow::dataSelectionChanged(int selectedIndex)
 	}
 
 	// Fill the graph
-	plotter_.setGraph(ui->customPlotData);
-	plotter_.plotRowData(selectedData->_spectrum.getDataVector(), 0);
+	dataPlot_.plotRowData(selectedData->_spectrum.getDataVector(), 0);
+}
 
-
+void MainWindow::resetDataPlotScale()
+{
+	dataPlot_.resetInitialPlotRange();
 }
 
 void MainWindow::dataFileAdded()
@@ -144,11 +150,6 @@ void MainWindow::removeAllDataFiles()
 
 void MainWindow::myplot()
 {
-	plotter_.setGraph(ui->customPlotData);
-
-
-
-	plotter_.plotRowData(_data.getSpectum().getDataVector(), 0);
 
 	peekFinder_.setData(_data.getSpectum().getDataVector());
 	peekFinder_.findAllPeaks(_data.getSpectum().getDataVector());
@@ -194,20 +195,20 @@ void MainWindow::setDataYAxisScaleType(bool isChecked)
 {
 	if (!isChecked)
 	{
-		ui->customPlotData->yAxis->setScaleType(QCPAxis::stLinear);
+		dataPlot_.getCustomPlot()->yAxis->setScaleType(QCPAxis::stLinear);
 		QSharedPointer<QCPAxisTicker> ticker(new QCPAxisTicker);
-		ui->customPlotData->yAxis->setTicker(ticker);
+		dataPlot_.getCustomPlot()->yAxis->setTicker(ticker);
 	}
 
 	else
 	{
-		ui->customPlotData->yAxis->setScaleType(QCPAxis::stLogarithmic);
+		dataPlot_.getCustomPlot()->yAxis->setScaleType(QCPAxis::stLogarithmic);
 		QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-		ui->customPlotData->yAxis->setTicker(logTicker);
+		dataPlot_.getCustomPlot()->yAxis->setTicker(logTicker);
 	}
 
 
-	ui->customPlotData->replot();
+	dataPlot_.getCustomPlot()->replot();
 
 }
 
@@ -227,10 +228,10 @@ void MainWindow::peekConfigChanged()
 	int minPeekWidth = ui->spinBox_minPeekWidth->value();
 
 	peekFinder_.choosePeaks(minPeekRange, minPeekRangeNoEdge, minPeekToValey, minPeekWidth);
-	ui->customPlotData->addGraph();
-	plotter_.setUpForPeekPlot();
-	plotter_.plotPeeks(peekFinder_.finalPeeks_);
-	//plotter_.plotFullPeeks(_data.getSpectum().getDataVector(), peekFinder_.finalPeeks_);
+	dataPlot_.getCustomPlot()->addGraph();
+	dataPlot_.setUpForPeekPlot();
+	dataPlot_.plotPeeks(peekFinder_.finalPeeks_);
+	//dataPlot_.plotFullPeeks(_data.getSpectum().getDataVector(), peekFinder_.finalPeeks_);
 	ui->list_peeks->clear();
 	for (int i = 0; i < peekFinder_.finalPeeks_.size(); ++i)
 	{

@@ -10,6 +10,7 @@ public:
 	MyQtData();
 	std::list<HCMRData>* getDataList();
 	HCMRData* getSelectedListItem();
+	int getSelectedListItemIndex();
 	void setSelectedListItem(int index);
 	bool addDataToList(HCMRData newdata);
 	void clearDataList();

@@ -5,7 +5,7 @@
 #include "MyQtData.h"
 #include "HCMRData.h"
 #include "HCMRPeekFinder.h"
-#include "QTPlotter.h"
+#include "MyQTPlot.h"
 
 
 namespace Ui {
@@ -19,9 +19,6 @@ class MainWindow : public QMainWindow
 public:
 	explicit MainWindow(QWidget* parent = nullptr);
 	~MainWindow();
-private:
-	Ui::MainWindow* ui;
-	QTPlotter plotter_;
 
 	//============
 	//  Data Tag  
@@ -39,12 +36,15 @@ private slots:
 	void dataSelectionChanged(int selectedIndex);
 	void removeSelectedDataFile();
 	void removeAllDataFiles();
+	void resetDataPlotScale();
 
 private:
+	Ui::MainWindow* ui;
+	MyQTPlot dataPlot_;
+
 	HCMRData _data;
 	MyQtData myQtData_;
 	HCMRPeekFinder peekFinder_;
-
 };
 
 #endif // MAINWINDOW_H

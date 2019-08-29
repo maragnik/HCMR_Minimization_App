@@ -26,7 +26,7 @@ set(project_sources
 		Sources/main.cpp 
 		Sources/mainwindow.cpp 
 		Sources/common/qcustomplot.cpp
-		Sources/common/QTPlotter.cpp
+		Sources/common/MyQTPlot.cpp
 		Sources/common/MyQtListener.cpp
 		Sources/data/MyQtData.cpp
 		Sources/data/MyQtDataConfig.cpp)
@@ -34,7 +34,7 @@ set(project_sources
 set(project_headers 
 		Sources/mainwindow.h 
 		Sources/common/qcustomplot.h
-		Sources/common/QTPlotter.h
+		Sources/common/MyQTPlot.h
 		Sources/common/MyQtListener.h
 		Sources/data/MyQtData.h
 		Sources/data/MyQtDataConfig.h)

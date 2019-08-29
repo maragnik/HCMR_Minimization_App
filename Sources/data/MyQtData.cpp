@@ -12,6 +12,11 @@ HCMRData* MyQtData::getSelectedListItem()
 	return selectedListItem_;
 }
 
+int MyQtData::getSelectedListItemIndex()
+{
+	return selectedListItemIndex_;
+}
+
 void MyQtData::setSelectedListItem(int index)
 {
 	int currentIndex = 0;

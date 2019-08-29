@@ -1,16 +1,16 @@
-﻿#ifndef PLOT_SPECTRUM_H
-#define PLOT_SPECTRUM_H
+﻿#ifndef MY_QTPLOT_H
+#define MY_QTPLOT_H
 #include "HCMRSpectrum.h"
 #include "qcustomplot.h"
 #include <vector>
 #include "IPlotter.h"
 #include "HCMRPeekFinder.h"
 
-class QTPlotter : public Plotter
+class MyQTPlot : public Plotter
 {
 public:
-	QTPlotter();
-	QTPlotter(QCustomPlot* customPlotData);
+	MyQTPlot();
+	MyQTPlot(QCustomPlot* customPlotData);
 
 	void plot(const HCMRSpectrum& spectrum, int graphNum);
 	void plot(std::vector<double> vector, int startChannel, int graphNum) override;
@@ -22,12 +22,21 @@ public:
 	void setUpForPeekPlot();
 	void setAxisLabels(QString xlabel, QString yLabel);
 
-	void setGraph(QCustomPlot* customPlotData);
+	void setCustomPlot(QCustomPlot* customPlotData);
+	QCustomPlot* getCustomPlot();
+
+public:
+	void setInitialPlotRange(QCPRange xRange, QCPRange yRange);
+	void resetInitialPlotRange();
+	QCPRange getInitialPlotXRange();
+	QCPRange getInitialPlotYRange();
 
 private:
 	QCustomPlot* _customPlot;
+	QCPRange _intialPlotXRange;
+	QCPRange _intialPlotYRange;
 	int _currentGraph;
 	bool _shouldScale;
 
 };
-#endif //PLOT_SPECTRUM_H
+#endif //MY_QTPLOT_H

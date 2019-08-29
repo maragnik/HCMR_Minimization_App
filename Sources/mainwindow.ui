@@ -101,7 +101,7 @@
                 <property name="title">
                  <string>Plot View</string>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_4">
+                <layout class="QHBoxLayout" name="horizontalLayout_16">
                  <item>
                   <widget class="QCheckBox" name="checkbox_yAxisScaleType">
                    <property name="text">
@@ -112,6 +112,13 @@
                    </property>
                    <property name="tristate">
                     <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_resetScale">
+                   <property name="text">
+                    <string>Reset Scale</string>
                    </property>
                   </widget>
                  </item>
@@ -623,8 +630,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>191</width>
-             <height>776</height>
+             <width>325</width>
+             <height>664</height>
             </rect>
            </property>
            <attribute name="label">
@@ -952,8 +959,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>191</width>
-             <height>553</height>
+             <width>346</width>
+             <height>532</height>
             </rect>
            </property>
            <attribute name="label">
