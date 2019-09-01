@@ -5,6 +5,7 @@
 #include <vector>
 #include "IPlotter.h"
 #include "HCMRPeakFinder.h"
+#include "HCMRConfig.h"
 
 class MyQTPlot : public Plotter
 {
@@ -17,9 +18,12 @@ public:
 	void plot(std::vector<double> vector, std::vector<int> x, std::vector<int> y, int graphNum) override;
 
 	void checkAddGraph(int graphNumber);
-	void plotRowData(std::vector<double> data, int graphNumber);
-	void plotPeaks(std::vector<HCMRPeak> peaks, int graphNumber);
-	void plotHoveredPeak(HCMRPeak peak, int graphNumber);
+	void plotRowData(std::vector<double> data, int graphNumber = 0);
+	void plotPeaks(std::vector<HCMRPeak> peaks, int graphNumber = 1);
+	void plotSelectedPeak(HCMRPeak peak, int graphNumber = 2);
+	void plotCalibrationPeaks(std::vector<PeakSearchConfigEntry> peakSearchConfigEntries);
+	void highlightSelectedCalibrationPeak(int index);
+	void removeCalibrationsPeaks();
 
 	void setCustomPlot(QCustomPlot* customPlotData);
 	QCustomPlot* getCustomPlot();
@@ -35,6 +39,7 @@ private:
 	QCPRange _intialPlotXRange;
 	QCPRange _intialPlotYRange;
 	bool _shouldScale;
-
+	std::vector<QCPItemStraightLine*> _peakLines;
+	std::vector<QCPItemRect*> _peakRects;
 };
 #endif //MY_QTPLOT_H

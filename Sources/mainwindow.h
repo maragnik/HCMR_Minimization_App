@@ -5,6 +5,7 @@
 #include "MyQtData.h"
 #include "HCMRData.h"
 #include "HCMRPeakFinder.h"
+#include "HCMRConfig.h"
 #include "MyQTPlot.h"
 
 
@@ -25,6 +26,7 @@ public:
 	// ===========
 public:
 	void dataFileAdded();
+	void refreshCalibrationPeakList();
 
 private slots:
 	void browseForDataFile();
@@ -33,21 +35,30 @@ private slots:
 	void peakConfigChanged(double val);
 	void peakConfigChanged();
 	void dataSelectionChanged(int selectedIndex);
+	void peakSelectionChanged(int peakIndex);
 	void removeSelectedDataFile();
 	void removeAllDataFiles();
 	void resetDataPlotScale();
 	void toolBoxPageChanged(int currentPageIndex);
 	void openDataFilesToolsOpened();
 	void choosePeaksToolsOpened();
-	void peakHovered(QListWidgetItem* item);
+	void peakSelected(QListWidgetItem* item);
+	void addSelectedPeakForCalibration();
+	void addSelectedPeakForCalibration(QListWidgetItem* item);
+	void removeSelectedCalibrationPeak();
+	void removeAllCalibrationPeaks();
+	void peakCalibrationSelected(QListWidgetItem* item);
+
 
 private:
 	Ui::MainWindow* ui;
 	MyQTPlot dataPlot_;
 
-	HCMRData _data;
+
 	MyQtData myQtData_;
+	HCMRConfig config_;
 	HCMRPeakFinder peakFinder_;
+	int selectedCalibrationPeakIndex_;
 };
 
 #endif // MAINWINDOW_H

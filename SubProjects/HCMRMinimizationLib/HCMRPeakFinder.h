@@ -13,6 +13,7 @@ struct HCMRPeak
 	uint16_t width = 0;
 	uint16_t widthPtV = 0;
 	double peakToValey = 0.F;
+	bool isValid = true;
 };
 
 class PeakGaussFCN : public ROOT::Minuit2::FCNBase

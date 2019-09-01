@@ -18,7 +18,9 @@ class HCMRConfig
 {
 public:
 	HCMRConfig();
-	std::vector<PeakSearchConfigEntry> _peakSearchConfigEntries;
+	void addPeakSearchConfigEntry(PeakSearchConfigEntry peakSearchConfigEntry);
+	void removePeakSearchConfigEntry(int index);
+	std::vector<PeakSearchConfigEntry> peakSearchConfigEntries;
 };
 
 #endif // HCMRCONFIG__H

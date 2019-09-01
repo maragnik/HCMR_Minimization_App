@@ -1,4 +1,4 @@
-﻿#include "HCMRMinimization.h"
+﻿#include "HCMRFitManager.h"
 #include "Minuit2/FCNBase.h"
 #include "Minuit2/MnMigrad.h"
 #include "Minuit2/FunctionMinimum.h"
@@ -12,7 +12,7 @@
 void testMinuit2()
 {
 	LOG_F(INFO, "Test Minimization with MINUT2");
-	HCMRMinimization minimization;
+	HCMRFitManager minimization;
 	minimization.addData(PATH_TO_EXTERNALS + "/testRandom.txt");
 	minimization.addUnitaryToModel(PATH_TO_EXTERNALS + "/testModel.txt");
 	minimization._data.print();

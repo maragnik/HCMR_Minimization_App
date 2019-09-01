@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 
 set(HCMRMinimization_sources 
-		HCMRMinimization.cpp
+		HCMRFitManager.cpp
 		HCMRSpectrum.cpp
 		HCMRModel.cpp
 		HCMRData.cpp
@@ -11,7 +11,7 @@ set(HCMRMinimization_sources
 
 set(HCMRMinimization_headers 
         common_definitions.h
-		HCMRMinimization.h
+		HCMRFitManager.h
 		HCMRSpectrum.h
 		HCMRModel.h
 		HCMRData.h

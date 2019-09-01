@@ -82,18 +82,85 @@ void MyQTPlot::plotPeaks(std::vector<HCMRPeak> peaks, int graphNumber)
 	_customPlot->replot();
 }
 
-void MyQTPlot::plotHoveredPeak(HCMRPeak peak, int graphNumber)
+void MyQTPlot::plotSelectedPeak(HCMRPeak peak, int graphNumber)
 {
-	checkAddGraph(graphNumber);
-	_shouldScale = false;
-	_customPlot->graph(graphNumber)->setLineStyle(QCPGraph::lsNone);
-	_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::red, 12));
 	QVector<double> y;
 	QVector<double> x;
-	x.push_back(peak.channel);
-	y.push_back(peak.value);
+	checkAddGraph(graphNumber);
+
+	if (peak.isValid)
+	{
+		_shouldScale = false;
+		_customPlot->graph(graphNumber)->setLineStyle(QCPGraph::lsNone);
+		_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::red, 12));
+		x.push_back(peak.channel);
+		y.push_back(peak.value);
+	}
 	_customPlot->graph(graphNumber)->setData(x, y);
 	_customPlot->replot();
+}
+
+void MyQTPlot::plotCalibrationPeaks(std::vector<PeakSearchConfigEntry> peakSearchConfigEntries)
+{
+	removeCalibrationsPeaks();
+	for (int i = 0; i < peakSearchConfigEntries.size(); ++i)
+	{
+		QCPItemStraightLine* infLine = new QCPItemStraightLine(_customPlot);
+		QPen pen;
+		pen.setWidth(3);
+		pen.setColor(QColor(0, 0, 0, 50));
+		infLine->setPen(pen);
+		infLine->point1->setCoords(peakSearchConfigEntries[i].centerChannel, 0);
+		infLine->point2->setCoords(peakSearchConfigEntries[i].centerChannel, 1);
+		_peakLines.push_back(infLine);
+
+		int channelsToLeft = peakSearchConfigEntries[i].searchRelativeToOtherPeak ?
+			peakSearchConfigEntries[i].numOfChannelsToTheLeftOfOtherPeak :
+			peakSearchConfigEntries[i].numOfChannelsToTheLeft;
+
+		int channelsToRight = peakSearchConfigEntries[i].searchRelativeToOtherPeak ?
+			peakSearchConfigEntries[i].numOfChannelsToTheRightOfOtherPeak :
+			peakSearchConfigEntries[i].numOfChannelsToTheRight;
+
+		QCPItemRect* rect = new QCPItemRect(_customPlot);
+		rect->topLeft->setCoords(peakSearchConfigEntries[i].centerChannel - channelsToLeft, _customPlot->yAxis->range().upper * 100);
+		rect->bottomRight->setCoords(peakSearchConfigEntries[i].centerChannel + channelsToRight, 0);
+		rect->setBrush(peakSearchConfigEntries[i].searchRelativeToOtherPeak ? QColor(0, 0, 255, 20) : QColor(0, 255, 0, 10));
+		pen.setColor(QColor(0, 0, 0, 0));
+		rect->setPen(pen);
+		_peakRects.push_back(rect);
+	}
+	_customPlot->replot();
+}
+
+void MyQTPlot::removeCalibrationsPeaks()
+{
+	for (int i = 0; i < _peakLines.size(); ++i)
+	{
+		_customPlot->removeItem(_peakLines[i]);
+		_customPlot->removeItem(_peakRects[i]);
+	}
+	_peakLines.clear();
+	_peakRects.clear();
+}
+
+void MyQTPlot::highlightSelectedCalibrationPeak(int index)
+{
+	QPen linePen(QColor(0, 0, 0, 50));
+	linePen.setWidth(3);
+	QPen rectPen(QColor(0, 0, 0, 0));
+
+	for (int i = 0; i < _peakLines.size(); ++i)
+	{
+		_peakLines[i]->setPen(linePen);
+		_peakRects[i]->setPen(rectPen);
+	}
+	linePen.setColor(QColor(0, 0, 0, 100));
+	rectPen.setColor(QColor(0, 0, 0, 100));
+	_peakLines[index]->setPen(linePen);
+	_peakRects[index]->setPen(rectPen);
+	_customPlot->replot();
+
 }
 
 void MyQTPlot::plot(std::vector<double> vector, int startChannel, int graphNum)

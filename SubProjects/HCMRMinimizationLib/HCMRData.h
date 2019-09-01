@@ -27,6 +27,7 @@ public:
 	uint16_t _realMeassurementDuration; //sec
 	std::string _filePath;
 	std::string _fileName;
+
 	static Plotter* fplotter;
 private:
 	static int nextID;

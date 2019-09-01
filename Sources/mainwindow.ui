@@ -179,7 +179,7 @@
            <number>1</number>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="page_open_files">
            <property name="geometry">
@@ -632,13 +632,13 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-240</y>
              <width>325</width>
-             <height>664</height>
+             <height>772</height>
             </rect>
            </property>
            <attribute name="label">
-            <string>Choose Calibration Peaks</string>
+            <string>Choose Calibration Peeks</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
@@ -856,38 +856,66 @@
                   <enum>QFrame::Raised</enum>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
-                   <widget class="QListWidget" name="list_peaks">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>1</verstretch>
-                     </sizepolicy>
+                   <widget class="QGroupBox" name="groupBox_3">
+                    <property name="title">
+                     <string>List of all found peaks</string>
                     </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>8</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="sizeIncrement">
-                     <size>
-                      <width>18</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="baseSize">
-                     <size>
-                      <width>8</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="mouseTracking">
-                     <bool>true</bool>
-                    </property>
-                    <property name="statusTip">
-                     <string extracomment="dsfdsfdfsfdsfdsffss"/>
-                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_4">
+                     <item>
+                      <widget class="QListWidget" name="list_peaks">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>1</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>8</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="sizeIncrement">
+                        <size>
+                         <width>18</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="baseSize">
+                        <size>
+                         <width>8</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="mouseTracking">
+                        <bool>true</bool>
+                       </property>
+                       <property name="statusTip">
+                        <string extracomment="dsfdsfdfsfdsfdsffss"/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="pushButton_add_peak_for_calibration">
+                       <property name="text">
+                        <string>Add to calibration peaks</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -901,42 +929,122 @@
                    <verstretch>1</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="baseSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="0">
+                  <property name="spacing">
+                   <number>7</number>
+                  </property>
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SetDefaultConstraint</enum>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
-                   <widget class="QListWidget" name="list_peaks_3">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>1</verstretch>
-                     </sizepolicy>
+                   <widget class="QGroupBox" name="groupBox_4">
+                    <property name="title">
+                     <string>List of selected calibration peaks</string>
                     </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>8</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="sizeIncrement">
-                     <size>
-                      <width>18</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="baseSize">
-                     <size>
-                      <width>8</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="statusTip">
-                     <string extracomment="dsfdsfdfsfdsfdsffss"/>
-                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_9">
+                     <item>
+                      <widget class="QListWidget" name="list_calibration_peaks">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>1</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>8</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="sizeIncrement">
+                        <size>
+                         <width>18</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="baseSize">
+                        <size>
+                         <width>8</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="mouseTracking">
+                        <bool>true</bool>
+                       </property>
+                       <property name="statusTip">
+                        <string extracomment="dsfdsfdfsfdsfdsffss"/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QFrame" name="frame_17">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_17">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QPushButton" name="pushButton_remove_calibration_peak">
+                          <property name="text">
+                           <string>Remove</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="pushButton_remove_all_calibration_peaks">
+                          <property name="text">
+                           <string>Remove All</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -1277,14 +1385,12 @@
   <tabstop>checkbox_yAxisScaleType</tabstop>
   <tabstop>spinBox_minPeakRange</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>list_peaks</tabstop>
   <tabstop>list_open_data_files</tabstop>
   <tabstop>spinBox_minPeakRange_2</tabstop>
   <tabstop>spinBox_minPeakRangeNoEdge_2</tabstop>
   <tabstop>spinBox_minPeakToValey_2</tabstop>
   <tabstop>spinBox_minPeakWidth_2</tabstop>
   <tabstop>list_peaks_2</tabstop>
-  <tabstop>list_peaks_3</tabstop>
   <tabstop>spinBox_minPeakRangeNoEdge</tabstop>
   <tabstop>spinBox_minPeakToValey</tabstop>
   <tabstop>spinBox_minPeakWidth</tabstop>
