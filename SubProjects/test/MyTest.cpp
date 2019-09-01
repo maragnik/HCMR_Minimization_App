@@ -6,7 +6,7 @@
 #include <string>
 #include "loguru.h"
 #include "HCMRParser.h"
-#include "HCMRPeekFinder.h"
+#include "HCMRPeakFinder.h"
 
 
 void testMinuit2()

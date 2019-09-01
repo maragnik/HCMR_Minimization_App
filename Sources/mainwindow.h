@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include "MyQtData.h"
 #include "HCMRData.h"
-#include "HCMRPeekFinder.h"
+#include "HCMRPeakFinder.h"
 #include "MyQTPlot.h"
 
 
@@ -24,19 +24,22 @@ public:
 	//  Data Tag  
 	// ===========
 public:
-	void myplot();
 	void dataFileAdded();
 
 private slots:
 	void browseForDataFile();
 	void setDataYAxisScaleType(bool isChecked);
-	void peekConfigChanged(int val);
-	void peekConfigChanged(double val);
-	void peekConfigChanged();
+	void peakConfigChanged(int val);
+	void peakConfigChanged(double val);
+	void peakConfigChanged();
 	void dataSelectionChanged(int selectedIndex);
 	void removeSelectedDataFile();
 	void removeAllDataFiles();
 	void resetDataPlotScale();
+	void toolBoxPageChanged(int currentPageIndex);
+	void openDataFilesToolsOpened();
+	void choosePeaksToolsOpened();
+	void peakHovered(QListWidgetItem* item);
 
 private:
 	Ui::MainWindow* ui;
@@ -44,7 +47,7 @@ private:
 
 	HCMRData _data;
 	MyQtData myQtData_;
-	HCMRPeekFinder peekFinder_;
+	HCMRPeakFinder peakFinder_;
 };
 
 #endif // MAINWINDOW_H

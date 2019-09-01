@@ -153,7 +153,7 @@
           </property>
           <property name="baseSize">
            <size>
-            <width>59</width>
+            <width>56</width>
             <height>0</height>
            </size>
           </property>
@@ -179,7 +179,7 @@
            <number>1</number>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="page_open_files">
            <property name="geometry">
@@ -250,6 +250,9 @@
                 <width>8</width>
                 <height>11</height>
                </size>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
               </property>
               <property name="statusTip">
                <string extracomment="dsfdsfdfsfdsfdsffss"/>
@@ -625,7 +628,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_choose_peeks">
+          <widget class="QWidget" name="page_choose_peaks">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -635,7 +638,7 @@
             </rect>
            </property>
            <attribute name="label">
-            <string>Choose Calibration Peeks</string>
+            <string>Choose Calibration Peaks</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
@@ -671,7 +674,7 @@
                   <item>
                    <widget class="QLabel" name="label">
                     <property name="text">
-                     <string>Min peek range (in channels):</string>
+                     <string>Min peak range (in channels):</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -679,7 +682,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSpinBox" name="spinBox_minPeekRange">
+                   <widget class="QSpinBox" name="spinBox_minPeakRange">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -715,7 +718,7 @@
                   <item>
                    <widget class="QLabel" name="label_2">
                     <property name="text">
-                     <string>Min peek range (edges ignored):</string>
+                     <string>Min peak range (edges ignored):</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -723,7 +726,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSpinBox" name="spinBox_minPeekRangeNoEdge">
+                   <widget class="QSpinBox" name="spinBox_minPeakRangeNoEdge">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -765,7 +768,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Min Peek to Valey (%):</string>
+                     <string>Min Peak to Valey (%):</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -773,7 +776,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="spinBox_minPeekToValey">
+                   <widget class="QDoubleSpinBox" name="spinBox_minPeakToValey">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -812,7 +815,7 @@
                   <item>
                    <widget class="QLabel" name="label_4">
                     <property name="text">
-                     <string>Min peek width (in channels):</string>
+                     <string>Min peak width (in channels):</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -820,7 +823,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSpinBox" name="spinBox_minPeekWidth">
+                   <widget class="QSpinBox" name="spinBox_minPeakWidth">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -854,7 +857,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_3">
                   <item>
-                   <widget class="QListWidget" name="list_peeks">
+                   <widget class="QListWidget" name="list_peaks">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -878,6 +881,9 @@
                       <width>8</width>
                       <height>0</height>
                      </size>
+                    </property>
+                    <property name="mouseTracking">
+                     <bool>true</bool>
                     </property>
                     <property name="statusTip">
                      <string extracomment="dsfdsfdfsfdsfdsffss"/>
@@ -903,7 +909,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_13">
                   <item>
-                   <widget class="QListWidget" name="list_peeks_3">
+                   <widget class="QListWidget" name="list_peaks_3">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -954,7 +960,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_config_peek_search">
+          <widget class="QWidget" name="page_config_peak_search">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -964,7 +970,7 @@
             </rect>
            </property>
            <attribute name="label">
-            <string>Configure Calibration Peek Search</string>
+            <string>Configure Calibration Peak Search</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_7">
             <item>
@@ -998,7 +1004,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_12">
                   <item>
-                   <widget class="QListWidget" name="list_peeks_2">
+                   <widget class="QListWidget" name="list_peaks_2">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -1049,7 +1055,7 @@
                   <item>
                    <widget class="QLabel" name="label_5">
                     <property name="text">
-                     <string>Min peek range (in channels):</string>
+                     <string>Min peak range (in channels):</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -1057,7 +1063,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSpinBox" name="spinBox_minPeekRange_2">
+                   <widget class="QSpinBox" name="spinBox_minPeakRange_2">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1093,7 +1099,7 @@
                   <item>
                    <widget class="QLabel" name="label_6">
                     <property name="text">
-                     <string>Min peek range (edges ignored):</string>
+                     <string>Min peak range (edges ignored):</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -1101,7 +1107,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSpinBox" name="spinBox_minPeekRangeNoEdge_2">
+                   <widget class="QSpinBox" name="spinBox_minPeakRangeNoEdge_2">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1143,7 +1149,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Min Peek to Valey (%):</string>
+                     <string>Min Peak to Valey (%):</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -1151,7 +1157,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="spinBox_minPeekToValey_2">
+                   <widget class="QDoubleSpinBox" name="spinBox_minPeakToValey_2">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1190,7 +1196,7 @@
                   <item>
                    <widget class="QLabel" name="label_8">
                     <property name="text">
-                     <string>Min peek width (in channels):</string>
+                     <string>Min peak width (in channels):</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -1198,7 +1204,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSpinBox" name="spinBox_minPeekWidth_2">
+                   <widget class="QSpinBox" name="spinBox_minPeakWidth_2">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1269,19 +1275,19 @@
  </customwidgets>
  <tabstops>
   <tabstop>checkbox_yAxisScaleType</tabstop>
-  <tabstop>spinBox_minPeekRange</tabstop>
+  <tabstop>spinBox_minPeakRange</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>list_peeks</tabstop>
+  <tabstop>list_peaks</tabstop>
   <tabstop>list_open_data_files</tabstop>
-  <tabstop>spinBox_minPeekRange_2</tabstop>
-  <tabstop>spinBox_minPeekRangeNoEdge_2</tabstop>
-  <tabstop>spinBox_minPeekToValey_2</tabstop>
-  <tabstop>spinBox_minPeekWidth_2</tabstop>
-  <tabstop>list_peeks_2</tabstop>
-  <tabstop>list_peeks_3</tabstop>
-  <tabstop>spinBox_minPeekRangeNoEdge</tabstop>
-  <tabstop>spinBox_minPeekToValey</tabstop>
-  <tabstop>spinBox_minPeekWidth</tabstop>
+  <tabstop>spinBox_minPeakRange_2</tabstop>
+  <tabstop>spinBox_minPeakRangeNoEdge_2</tabstop>
+  <tabstop>spinBox_minPeakToValey_2</tabstop>
+  <tabstop>spinBox_minPeakWidth_2</tabstop>
+  <tabstop>list_peaks_2</tabstop>
+  <tabstop>list_peaks_3</tabstop>
+  <tabstop>spinBox_minPeakRangeNoEdge</tabstop>
+  <tabstop>spinBox_minPeakToValey</tabstop>
+  <tabstop>spinBox_minPeakWidth</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -3,22 +3,22 @@
 
 #include <vector>
 
-struct PeekSearchConfigEntry
+struct PeakSearchConfigEntry
 {
 	int centerChannel = -1;
 	int numOfChannelsToTheLeft = 100;
 	int numOfChannelsToTheRight = 100;
-	bool searchRelativeToOtherPeek = false;
-	int otherPeekConfigEntryIndex = -1;
-	int numOfChannelsToTheLeftOfOtherPeek = 20;
-	int numOfChannelsToTheRightOfOtherPeek = 20;
+	bool searchRelativeToOtherPeak = false;
+	int otherPeakConfigEntryIndex = -1;
+	int numOfChannelsToTheLeftOfOtherPeak = 20;
+	int numOfChannelsToTheRightOfOtherPeak = 20;
 };
 
 class HCMRConfig
 {
 public:
 	HCMRConfig();
-	std::vector<PeekSearchConfigEntry> _peekSearchConfigEntries;
+	std::vector<PeakSearchConfigEntry> _peakSearchConfigEntries;
 };
 
 #endif // HCMRCONFIG__H

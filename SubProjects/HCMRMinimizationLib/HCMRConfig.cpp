@@ -2,5 +2,5 @@
 
 HCMRConfig::HCMRConfig()
 {
-	_peekSearchConfigEntries.clear();
+	_peakSearchConfigEntries.clear();
 }

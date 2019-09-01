@@ -66,7 +66,7 @@ void HCMRData::fillDataFromSpeFile(const std::string& file)
 	nextID++;
 }
 
-void HCMRData::findPeeks()
+void HCMRData::findPeaks()
 {
 
 }

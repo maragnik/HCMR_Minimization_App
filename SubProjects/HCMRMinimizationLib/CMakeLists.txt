@@ -6,7 +6,7 @@ set(HCMRMinimization_sources
 		HCMRModel.cpp
 		HCMRData.cpp
 		HCMRParser.cpp
-		HCMRPeekFinder.cpp
+		HCMRPeakFinder.cpp
 		HCMRConfig.cpp)
 
 set(HCMRMinimization_headers 
@@ -16,7 +16,7 @@ set(HCMRMinimization_headers
 		HCMRModel.h
 		HCMRData.h
 		HCMRParser.h
-		HCMRPeekFinder.h
+		HCMRPeakFinder.h
 		IPlotter.h
 		IHCMRListener.h
 		HCMRConfig.h)

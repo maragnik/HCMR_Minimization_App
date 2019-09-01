@@ -11,7 +11,7 @@ public:
 	const HCMRSpectrum& getSpectum() const;
 	void print() const;
 	void fillDataFromSpeFile(const std::string& file);
-	void findPeeks();
+	void findPeaks();
 	static void setPlotter(Plotter* plotter);
 	static void removePlotter();
 public:
