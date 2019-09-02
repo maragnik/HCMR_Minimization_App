@@ -4,7 +4,8 @@
 #include "qcustomplot.h"
 #include <vector>
 #include "IPlotter.h"
-#include "HCMRPeekFinder.h"
+#include "HCMRPeakFinder.h"
+#include "HCMRConfig.h"
 
 class MyQTPlot : public Plotter
 {
@@ -15,12 +16,14 @@ public:
 	void plot(const HCMRSpectrum& spectrum, int graphNum);
 	void plot(std::vector<double> vector, int startChannel, int graphNum) override;
 	void plot(std::vector<double> vector, std::vector<int> x, std::vector<int> y, int graphNum) override;
-	void plotPeeks(std::vector<HCMRPeek> peeks);
-	void plotFullPeeks(const std::vector<double>& data, std::vector<HCMRPeek> peeks);
-	void plotRowData(std::vector<double> data, int graphNumber);
 
-	void setUpForPeekPlot();
-	void setAxisLabels(QString xlabel, QString yLabel);
+	void checkAddGraph(int graphNumber);
+	void plotRowData(std::vector<double> data, int graphNumber = 0);
+	void plotPeaks(std::vector<HCMRPeak> peaks, int graphNumber = 1);
+	void plotSelectedPeak(HCMRPeak peak, int graphNumber = 2);
+	void plotCalibrationPeaks(std::vector<PeakSearchConfigEntry> peakSearchConfigEntries);
+	void highlightSelectedCalibrationPeak(int index);
+	void removeCalibrationsPeaks();
 
 	void setCustomPlot(QCustomPlot* customPlotData);
 	QCustomPlot* getCustomPlot();
@@ -35,8 +38,8 @@ private:
 	QCustomPlot* _customPlot;
 	QCPRange _intialPlotXRange;
 	QCPRange _intialPlotYRange;
-	int _currentGraph;
 	bool _shouldScale;
-
+	std::vector<QCPItemStraightLine*> _peakLines;
+	std::vector<QCPItemRect*> _peakRects;
 };
 #endif //MY_QTPLOT_H

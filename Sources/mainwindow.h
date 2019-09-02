@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include "MyQtData.h"
 #include "HCMRData.h"
-#include "HCMRPeekFinder.h"
+#include "HCMRPeakFinder.h"
+#include "HCMRConfig.h"
 #include "MyQTPlot.h"
 
 
@@ -24,27 +25,42 @@ public:
 	//  Data Tag  
 	// ===========
 public:
-	void myplot();
 	void dataFileAdded();
+	void refreshCalibrationPeakList();
 
 private slots:
 	void browseForDataFile();
 	void setDataYAxisScaleType(bool isChecked);
-	void peekConfigChanged(int val);
-	void peekConfigChanged(double val);
-	void peekConfigChanged();
+	void peakConfigChanged(int val);
+	void peakConfigChanged(double val);
+	void peakConfigChanged();
 	void dataSelectionChanged(int selectedIndex);
+	void peakSelectionChanged(int peakIndex);
 	void removeSelectedDataFile();
 	void removeAllDataFiles();
 	void resetDataPlotScale();
+	void toolBoxPageChanged(int currentPageIndex);
+	void openDataFilesToolsOpened();
+	void choosePeaksToolsOpened();
+	void chooseCalibrationPeaksConfigOpened();
+	void peakSelected(QListWidgetItem* item);
+	void addSelectedPeakForCalibration();
+	void addSelectedPeakForCalibration(QListWidgetItem* item);
+	void removeSelectedCalibrationPeak();
+	void removeAllCalibrationPeaks();
+	void peakCalibrationSelected(QListWidgetItem* item);
+	void peakCalibrationSelected2(QListWidgetItem* item);
+
 
 private:
 	Ui::MainWindow* ui;
 	MyQTPlot dataPlot_;
 
-	HCMRData _data;
+
 	MyQtData myQtData_;
-	HCMRPeekFinder peekFinder_;
+	HCMRConfig config_;
+	HCMRPeakFinder peakFinder_;
+	int selectedCalibrationPeakIndex_;
 };
 
 #endif // MAINWINDOW_H

@@ -3,13 +3,11 @@
 
 MyQTPlot::MyQTPlot(QCustomPlot* customPlotData) :
 	_customPlot(customPlotData),
-	_currentGraph(0),
 	_shouldScale(true)
 {}
 
 MyQTPlot::MyQTPlot() :
 	_customPlot(nullptr),
-	_currentGraph(0),
 	_shouldScale(true)
 {
 
@@ -19,41 +17,7 @@ void MyQTPlot::plot(const HCMRSpectrum& spectrum, int graphNum)
 	plot(spectrum.getDataVector(), 0, graphNum);
 }
 
-void MyQTPlot::plotPeeks(std::vector<HCMRPeek> peeks)
-{
-	QVector<double> y;
-	QVector<double> x;
-	for (int i = 0; i < peeks.size(); ++i)
-	{
-		x.push_back(peeks[i].channel);
-		y.push_back(peeks[i].value);
-	}
-	_customPlot->graph(_currentGraph)->setData(x, y);
-	_customPlot->replot();
-	QApplication::processEvents();
-
-}
-void MyQTPlot::plotFullPeeks(const std::vector<double>& data, std::vector<HCMRPeek> peeks)
-{
-	QVector<double> y;
-	QVector<double> x;
-	for (int i = 1; i < peeks.size(); ++i)
-	{
-		int minJ = std::max(static_cast<int>(peeks[i].channel) - peeks[i].widthPtV / 2, 0);
-		int maxJ = std::min(static_cast<int>(peeks[i].channel) + peeks[i].widthPtV / 2, static_cast<int>(data.size() - 1));
-		for (int j = minJ; j <= maxJ; ++j)
-		{
-			x.push_back(j);
-			y.push_back(data[j]);
-		}
-
-	}
-	_customPlot->graph(_currentGraph)->setData(x, y);
-	_customPlot->replot();
-	QApplication::processEvents();
-}
-
-void MyQTPlot::plotRowData(std::vector<double> data, int graphNumber)
+void MyQTPlot::checkAddGraph(int graphNumber)
 {
 	int numOfGraphs = _customPlot->graphCount();
 	while (numOfGraphs < graphNumber + 1)
@@ -61,12 +25,18 @@ void MyQTPlot::plotRowData(std::vector<double> data, int graphNumber)
 		_customPlot->addGraph();
 		numOfGraphs++;
 	}
-	setAxisLabels("Energy Channel", "Counts");
-	_currentGraph = graphNumber;
+}
+
+void MyQTPlot::plotRowData(std::vector<double> data, int graphNumber)
+{
+	checkAddGraph(graphNumber);
+	_customPlot->xAxis->setLabel("Energy Channel");
+	_customPlot->yAxis->setLabel("Counts");
+
 	_shouldScale = true;
-	_customPlot->graph(_currentGraph)->setLineStyle(QCPGraph::lsLine);
-	_customPlot->graph(_currentGraph)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
-	_customPlot->graph(_currentGraph)->setPen(QPen(Qt::black));
+	_customPlot->graph(graphNumber)->setLineStyle(QCPGraph::lsLine);
+	_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
+	_customPlot->graph(graphNumber)->setPen(QPen(Qt::black));
 
 	double maxYValue = 0;
 	double minYValue = 20000;
@@ -82,7 +52,7 @@ void MyQTPlot::plotRowData(std::vector<double> data, int graphNumber)
 		x.push_back(i);
 	}
 
-	_customPlot->graph(_currentGraph)->setData(x, y);
+	_customPlot->graph(graphNumber)->setData(x, y);
 	if (_shouldScale)
 	{
 		_customPlot->xAxis->setRange(minXValue, maxXValue);
@@ -94,19 +64,103 @@ void MyQTPlot::plotRowData(std::vector<double> data, int graphNumber)
 	QApplication::processEvents();
 }
 
-void MyQTPlot::setUpForPeekPlot()
+void MyQTPlot::plotPeaks(std::vector<HCMRPeak> peaks, int graphNumber)
 {
-	_currentGraph = 1;
+	checkAddGraph(graphNumber);
 	_shouldScale = false;
-	_customPlot->graph(_currentGraph)->setLineStyle(QCPGraph::lsNone);
-	_customPlot->graph(_currentGraph)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::red, 7));
+	_customPlot->graph(graphNumber)->setLineStyle(QCPGraph::lsNone);
+	_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::blue, Qt::blue, 7));
+
+	QVector<double> y;
+	QVector<double> x;
+	for (int i = 0; i < peaks.size(); ++i)
+	{
+		x.push_back(peaks[i].channel);
+		y.push_back(peaks[i].value);
+	}
+	_customPlot->graph(graphNumber)->setData(x, y);
 	_customPlot->replot();
 }
-void MyQTPlot::setAxisLabels(QString xlabel, QString yLabel)
+
+void MyQTPlot::plotSelectedPeak(HCMRPeak peak, int graphNumber)
 {
-	_customPlot->xAxis->setLabel(xlabel);
-	_customPlot->yAxis->setLabel(yLabel);
+	QVector<double> y;
+	QVector<double> x;
+	checkAddGraph(graphNumber);
+
+	if (peak.isValid)
+	{
+		_shouldScale = false;
+		_customPlot->graph(graphNumber)->setLineStyle(QCPGraph::lsNone);
+		_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::blue, Qt::blue, 12));
+		x.push_back(peak.channel);
+		y.push_back(peak.value);
+	}
+	_customPlot->graph(graphNumber)->setData(x, y);
 	_customPlot->replot();
+}
+
+void MyQTPlot::plotCalibrationPeaks(std::vector<PeakSearchConfigEntry> peakSearchConfigEntries)
+{
+	removeCalibrationsPeaks();
+	for (int i = 0; i < peakSearchConfigEntries.size(); ++i)
+	{
+		QCPItemStraightLine* infLine = new QCPItemStraightLine(_customPlot);
+		QPen pen;
+		pen.setWidth(3);
+		pen.setColor(QColor(0, 0, 0, 50));
+		infLine->setPen(pen);
+		infLine->point1->setCoords(peakSearchConfigEntries[i].centerChannel, 0);
+		infLine->point2->setCoords(peakSearchConfigEntries[i].centerChannel, 1);
+		_peakLines.push_back(infLine);
+
+		int channelsToLeft = peakSearchConfigEntries[i].searchRelativeToOtherPeak ?
+			peakSearchConfigEntries[i].numOfChannelsToTheLeft2 :
+			peakSearchConfigEntries[i].numOfChannelsToTheLeft;
+
+		int channelsToRight = peakSearchConfigEntries[i].searchRelativeToOtherPeak ?
+			peakSearchConfigEntries[i].numOfChannelsToTheRight2 :
+			peakSearchConfigEntries[i].numOfChannelsToTheRight;
+
+		QCPItemRect* rect = new QCPItemRect(_customPlot);
+		rect->topLeft->setCoords(peakSearchConfigEntries[i].centerChannel - channelsToLeft, _customPlot->yAxis->range().upper * 100);
+		rect->bottomRight->setCoords(peakSearchConfigEntries[i].centerChannel + channelsToRight, 0);
+		rect->setBrush(peakSearchConfigEntries[i].searchRelativeToOtherPeak ? QColor(0, 0, 255, 20) : QColor(0, 255, 0, 10));
+		pen.setColor(QColor(0, 0, 0, 0));
+		rect->setPen(pen);
+		_peakRects.push_back(rect);
+	}
+	_customPlot->replot();
+}
+
+void MyQTPlot::removeCalibrationsPeaks()
+{
+	for (int i = 0; i < _peakLines.size(); ++i)
+	{
+		_customPlot->removeItem(_peakLines[i]);
+		_customPlot->removeItem(_peakRects[i]);
+	}
+	_peakLines.clear();
+	_peakRects.clear();
+}
+
+void MyQTPlot::highlightSelectedCalibrationPeak(int index)
+{
+	QPen linePen(QColor(0, 0, 0, 50));
+	linePen.setWidth(3);
+	QPen rectPen(QColor(0, 0, 0, 0));
+
+	for (int i = 0; i < _peakLines.size(); ++i)
+	{
+		_peakLines[i]->setPen(linePen);
+		_peakRects[i]->setPen(rectPen);
+	}
+	linePen.setColor(QColor(0, 0, 0, 100));
+	rectPen.setColor(QColor(0, 0, 0, 100));
+	_peakLines[index]->setPen(linePen);
+	_peakRects[index]->setPen(rectPen);
+	_customPlot->replot();
+
 }
 
 void MyQTPlot::plot(std::vector<double> vector, int startChannel, int graphNum)
@@ -154,7 +208,6 @@ void MyQTPlot::plot(std::vector<double> vector, int startChannel, int graphNum)
 	}
 
 	_customPlot->replot();
-	QApplication::processEvents();
 }
 
 void MyQTPlot::plot(std::vector<double> vector, std::vector<int> x, std::vector<int> y, int graphNum)

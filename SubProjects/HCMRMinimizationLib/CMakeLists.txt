@@ -1,22 +1,22 @@
 cmake_minimum_required(VERSION 3.6)
 
 set(HCMRMinimization_sources 
-		HCMRMinimization.cpp
+		HCMRFitManager.cpp
 		HCMRSpectrum.cpp
 		HCMRModel.cpp
 		HCMRData.cpp
 		HCMRParser.cpp
-		HCMRPeekFinder.cpp
+		HCMRPeakFinder.cpp
 		HCMRConfig.cpp)
 
 set(HCMRMinimization_headers 
         common_definitions.h
-		HCMRMinimization.h
+		HCMRFitManager.h
 		HCMRSpectrum.h
 		HCMRModel.h
 		HCMRData.h
 		HCMRParser.h
-		HCMRPeekFinder.h
+		HCMRPeakFinder.h
 		IPlotter.h
 		IHCMRListener.h
 		HCMRConfig.h)

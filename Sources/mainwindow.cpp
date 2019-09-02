@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "HCMRParser.h"
 #include "MyQTPlot.h"
-#include "HCMRPeekFinder.h"
+#include "HCMRPeakFinder.h"
 #include "loguru.h"
 #include <iostream>
 #include "common_definitions.h"
@@ -29,15 +29,23 @@ MainWindow::MainWindow(QWidget* parent) :
 	connect(ui->button_add_data_file, &QAbstractButton::clicked, this, &MainWindow::browseForDataFile);
 	connect(ui->button_remove_all_data_files, SIGNAL(clicked()), this, SLOT(removeAllDataFiles()));
 	connect(ui->button_remove_selected_data_file, SIGNAL(clicked()), this, SLOT(removeSelectedDataFile()));
+	connect(ui->pushButton_add_peak_for_calibration, SIGNAL(clicked()), this, SLOT(addSelectedPeakForCalibration()));
+	connect(ui->pushButton_remove_calibration_peak, SIGNAL(clicked()), this, SLOT(removeSelectedCalibrationPeak()));
+	connect(ui->pushButton_remove_all_calibration_peaks, SIGNAL(clicked()), this, SLOT(removeAllCalibrationPeaks()));
 	connect(ui->checkbox_yAxisScaleType, SIGNAL(toggled(bool)), this, SLOT(setDataYAxisScaleType(bool)));
-	connect(ui->spinBox_minPeekRange, SIGNAL(valueChanged(int)), this, SLOT(peekConfigChanged(int)));
-	connect(ui->spinBox_minPeekRangeNoEdge, SIGNAL(valueChanged(int)), this, SLOT(peekConfigChanged(int)));
-	connect(ui->spinBox_minPeekToValey, SIGNAL(valueChanged(double)), this, SLOT(peekConfigChanged(double)));
-	connect(ui->spinBox_minPeekWidth, SIGNAL(valueChanged(int)), this, SLOT(peekConfigChanged(int)));
+	connect(ui->spinBox_minPeakRange, SIGNAL(valueChanged(int)), this, SLOT(peakConfigChanged(int)));
+	connect(ui->spinBox_minPeakRangeNoEdge, SIGNAL(valueChanged(int)), this, SLOT(peakConfigChanged(int)));
+	connect(ui->spinBox_minPeakToValey, SIGNAL(valueChanged(double)), this, SLOT(peakConfigChanged(double)));
+	connect(ui->spinBox_minPeakWidth, SIGNAL(valueChanged(int)), this, SLOT(peakConfigChanged(int)));
 	connect(ui->list_open_data_files, SIGNAL(currentRowChanged(int)), this, SLOT(dataSelectionChanged(int)));
+	connect(ui->list_peaks, SIGNAL(currentRowChanged(int)), this, SLOT(peakSelectionChanged(int)));
+	connect(ui->list_peaks, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(peakSelected(QListWidgetItem*)));
+	connect(ui->list_peaks, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(addSelectedPeakForCalibration(QListWidgetItem*)));
+	connect(ui->list_calibration_peaks, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(peakCalibrationSelected(QListWidgetItem*)));
+	connect(ui->list_calibration_peaks_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(peakCalibrationSelected2(QListWidgetItem*)));
 	connect(ui->pushButton_resetScale, SIGNAL(clicked()), this, SLOT(resetDataPlotScale()));
 	connect(ui->customPlotData->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlotData->xAxis2, SLOT(setRange(QCPRange)));
-
+	connect(ui->toolBox, SIGNAL(currentChanged(int)), this, SLOT(toolBoxPageChanged(int)));
 }
 
 MainWindow::~MainWindow()
@@ -70,7 +78,23 @@ void MainWindow::dataSelectionChanged(int selectedIndex)
 	}
 
 	// Fill the graph
+	peakFinder_.findAllPeaks(myQtData_.getSelectedListItem()->getSpectum().getDataVector());
 	dataPlot_.plotRowData(selectedData->_spectrum.getDataVector(), 0);
+	peakConfigChanged();
+}
+
+void MainWindow::peakSelectionChanged(int peakIndex)
+{
+	if (peakIndex >= 0)
+	{
+		dataPlot_.plotSelectedPeak(peakFinder_.finalPeaks_[peakIndex]);
+	}
+	else
+	{
+		HCMRPeak dummyPeak;
+		dummyPeak.isValid = false;
+		dataPlot_.plotSelectedPeak(dummyPeak);
+	}
 }
 
 void MainWindow::resetDataPlotScale()
@@ -148,14 +172,6 @@ void MainWindow::removeAllDataFiles()
 
 }
 
-void MainWindow::myplot()
-{
-
-	peekFinder_.setData(_data.getSpectum().getDataVector());
-	peekFinder_.findAllPeaks(_data.getSpectum().getDataVector());
-	peekConfigChanged();
-}
-
 void MainWindow::browseForDataFile()
 {
 	QString path = QString::fromStdString(PATH_TO_EXTERNALS);
@@ -212,33 +228,146 @@ void MainWindow::setDataYAxisScaleType(bool isChecked)
 
 }
 
-void MainWindow::peekConfigChanged(int val)
+void MainWindow::peakConfigChanged(int val)
 {
-	peekConfigChanged();
+	peakConfigChanged();
 }
-void MainWindow::peekConfigChanged(double val)
+void MainWindow::peakConfigChanged(double val)
 {
-	peekConfigChanged();
+	peakConfigChanged();
 }
-void MainWindow::peekConfigChanged()
+void MainWindow::peakConfigChanged()
 {
-	int minPeekRange = ui->spinBox_minPeekRange->value();
-	int minPeekRangeNoEdge = ui->spinBox_minPeekRangeNoEdge->value();
-	double minPeekToValey = static_cast<double>(ui->spinBox_minPeekToValey->value());
-	int minPeekWidth = ui->spinBox_minPeekWidth->value();
+	int minPeakRange = ui->spinBox_minPeakRange->value();
+	int minPeakRangeNoEdge = ui->spinBox_minPeakRangeNoEdge->value();
+	double minPeakToValey = static_cast<double>(ui->spinBox_minPeakToValey->value());
+	int minPeakWidth = ui->spinBox_minPeakWidth->value();
 
-	peekFinder_.choosePeaks(minPeekRange, minPeekRangeNoEdge, minPeekToValey, minPeekWidth);
-	dataPlot_.getCustomPlot()->addGraph();
-	dataPlot_.setUpForPeekPlot();
-	dataPlot_.plotPeeks(peekFinder_.finalPeeks_);
-	//dataPlot_.plotFullPeeks(_data.getSpectum().getDataVector(), peekFinder_.finalPeeks_);
-	ui->list_peeks->clear();
-	for (int i = 0; i < peekFinder_.finalPeeks_.size(); ++i)
+	peakFinder_.choosePeaks(minPeakRange, minPeakRangeNoEdge, minPeakToValey, minPeakWidth);
+	dataPlot_.plotPeaks(peakFinder_.finalPeaks_, 1);
+	ui->list_peaks->clear();
+	for (int i = 0; i < peakFinder_.finalPeaks_.size(); ++i)
 	{
-		ui->list_peeks->addItem(QString::number(peekFinder_.finalPeeks_[i].channel) + "  " +
-			QString::number(peekFinder_.finalPeeks_[i].widthNoEdge) + "  " +
-			QString::number(peekFinder_.finalPeeks_[i].width) + "  " +
-			QString::number(peekFinder_.finalPeeks_[i].widthPtV) + "  " +
-			QString::number(peekFinder_.finalPeeks_[i].peekToValey));
+		QString str;
+		str.sprintf("%.2d. channel: %.4d, PtV: %5.2f, peakWidth: %d, width: %d, widthNoEdge: %d",
+			i,
+			peakFinder_.finalPeaks_[i].channel,
+			peakFinder_.finalPeaks_[i].peakToValey * 100 / peakFinder_.finalPeaks_[i].value,
+			peakFinder_.finalPeaks_[i].widthPtV,
+			peakFinder_.finalPeaks_[i].width,
+			peakFinder_.finalPeaks_[i].widthNoEdge);
+		ui->list_peaks->addItem(str);
 	}
+}
+
+void MainWindow::toolBoxPageChanged(int currentPageIndex)
+{
+	if (currentPageIndex == 0)
+	{
+		openDataFilesToolsOpened();
+	}
+	else if (currentPageIndex == 1)
+	{
+		choosePeaksToolsOpened();
+	}
+	else if (currentPageIndex == 2)
+	{
+		chooseCalibrationPeaksConfigOpened();
+	}
+}
+
+void MainWindow::openDataFilesToolsOpened()
+{
+
+}
+
+void MainWindow::choosePeaksToolsOpened()
+{
+	int numOfGraphs = ui->customPlotData->graphCount();
+	if (numOfGraphs > 1) ui->customPlotData->graph(1)->setVisible(true);
+	if (numOfGraphs > 2) ui->customPlotData->graph(2)->setVisible(true);
+	ui->customPlotData->replot();
+}
+
+void MainWindow::chooseCalibrationPeaksConfigOpened()
+{
+	int numOfGraphs = ui->customPlotData->graphCount();
+	if (numOfGraphs > 1)ui->customPlotData->graph(1)->setVisible(false);
+	if (numOfGraphs > 2)ui->customPlotData->graph(2)->setVisible(false);
+	ui->customPlotData->replot();
+}
+
+void MainWindow::peakSelected(QListWidgetItem * item)
+{
+	int selectedPeakIndex = ui->list_peaks->row(item);
+	dataPlot_.plotSelectedPeak(peakFinder_.finalPeaks_[selectedPeakIndex], 2);
+}
+
+void MainWindow::addSelectedPeakForCalibration()
+{
+	int index = ui->list_peaks->currentRow();
+	PeakSearchConfigEntry peakSearchConfigEntry;
+	peakSearchConfigEntry.centerChannel = peakFinder_.finalPeaks_[index].channel;
+	config_.addPeakSearchConfigEntry(peakSearchConfigEntry);
+	refreshCalibrationPeakList();
+}
+
+void MainWindow::addSelectedPeakForCalibration(QListWidgetItem * item)
+{
+	addSelectedPeakForCalibration();
+}
+
+void MainWindow::refreshCalibrationPeakList()
+{
+	ui->list_calibration_peaks->clear();
+	ui->list_calibration_peaks_2->clear();
+	if (!config_.peakSearchConfigEntries.empty())
+	{
+		ui->toolBox->setItemEnabled(2, true);
+	}
+	else
+	{
+		ui->toolBox->setItemEnabled(2, false);
+	}
+
+	for (int i = 0; i < config_.peakSearchConfigEntries.size(); ++i)
+	{
+		QString str;
+		str.sprintf("%d. Channel: %.4d", i, config_.peakSearchConfigEntries[i].centerChannel);
+		ui->list_calibration_peaks->addItem(str);
+		ui->list_calibration_peaks_2->addItem(str);
+	}
+	dataPlot_.plotCalibrationPeaks(config_.peakSearchConfigEntries);
+}
+
+void MainWindow::removeSelectedCalibrationPeak()
+{
+	int index = ui->list_calibration_peaks->currentRow();
+	if (index >= 0)
+	{
+		config_.removePeakSearchConfigEntry(index);
+		refreshCalibrationPeakList();
+		dataPlot_.plotCalibrationPeaks(config_.peakSearchConfigEntries);
+	}
+
+}
+void MainWindow::removeAllCalibrationPeaks()
+{
+	config_.peakSearchConfigEntries.clear();
+	refreshCalibrationPeakList();
+	dataPlot_.plotCalibrationPeaks(config_.peakSearchConfigEntries);
+}
+
+void MainWindow::peakCalibrationSelected(QListWidgetItem * item)
+{
+
+	int index = ui->list_calibration_peaks->row(item);
+	dataPlot_.highlightSelectedCalibrationPeak(index);
+}
+
+void MainWindow::peakCalibrationSelected2(QListWidgetItem * item)
+{
+
+	int index = ui->list_calibration_peaks_2->row(item);
+	dataPlot_.highlightSelectedCalibrationPeak(index);
 }

@@ -1,24 +1,25 @@
-﻿#ifndef HCMRpeekFinder__H
-#define HCMRpeekFinder__H
+﻿#ifndef HCMRpeakFinder__H
+#define HCMRpeakFinder__H
 
 #include "Minuit2/FCNBase.h"
 #include "HCMRSpectrum.h"
 #include "IPlotter.h"
 
-struct HCMRPeek
+struct HCMRPeak
 {
 	uint32_t channel = 0;
 	double value = 0;
 	uint16_t widthNoEdge = 0;
 	uint16_t width = 0;
 	uint16_t widthPtV = 0;
-	double peekToValey = 0.F;
+	double peakToValey = 0.F;
+	bool isValid = true;
 };
 
-class PeekGaussFCN : public ROOT::Minuit2::FCNBase
+class PeakGaussFCN : public ROOT::Minuit2::FCNBase
 {
 public:
-	PeekGaussFCN();
+	PeakGaussFCN();
 
 	// FCNBase methods implementation
 	double operator()(const std::vector<double>& par) const override;
@@ -30,30 +31,30 @@ private:
 
 };
 
-class HCMRPeekFinder
+class HCMRPeakFinder
 {
 public:
-	HCMRPeekFinder();
+	HCMRPeakFinder();
 	void setData(const std::vector<double>& data);
-	void findPeeks();
+	void findPeaks();
 	void findAllPeaks(const std::vector<double>& data);
 	void correctWidthNoEdgeValues();
-	void choosePeaks(int minPeekWindow, int minPeekWindowNoEdges, double minPeekToValey, int minPeekWidth);
-	bool isPeek(const std::vector<double>& data, int index);
-	double getPeekToValey(const std::vector<double>& data, int peekIndex, int halfWindow, int& peekWidth);
-	int peekFound(const std::vector<double>& data, int centerIndex, int halfWindow);
-	bool peekRemains(const std::vector<double>& data, int peekIndex, int halfWindow, bool accountForEdges);
+	void choosePeaks(int minPeakWindow, int minPeakWindowNoEdges, double minPeakToValey, int minPeakWidth);
+	bool isPeak(const std::vector<double>& data, int index);
+	double getPeakToValey(const std::vector<double>& data, int peakIndex, int halfWindow, int& peakWidth);
+	int peakFound(const std::vector<double>& data, int centerIndex, int halfWindow);
+	bool peakRemains(const std::vector<double>& data, int peakIndex, int halfWindow, bool accountForEdges);
 	std::vector<double> makeLogarithmic(const std::vector<double>& data);
 	std::vector<double> smooth(const std::vector<double>& data, int width);
 
-	PeekGaussFCN fcn_;
-	std::vector<HCMRPeek> finalPeeks_;
+	PeakGaussFCN fcn_;
+	std::vector<HCMRPeak> finalPeaks_;
 
 private:
 	const std::vector<double>* data_;
 
-	//Peek data
-	std::vector<HCMRPeek> peeks_;
+	//Peak data
+	std::vector<HCMRPeak> allPeaks_;
 };
 
 #endif //HCMR_PICKFINDER_H
