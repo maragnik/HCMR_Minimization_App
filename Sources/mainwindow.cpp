@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget* parent) :
 	connect(ui->list_peaks, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(peakSelected(QListWidgetItem*)));
 	connect(ui->list_peaks, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(addSelectedPeakForCalibration(QListWidgetItem*)));
 	connect(ui->list_calibration_peaks, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(peakCalibrationSelected(QListWidgetItem*)));
+	connect(ui->list_calibration_peaks_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(peakCalibrationSelected2(QListWidgetItem*)));
 	connect(ui->pushButton_resetScale, SIGNAL(clicked()), this, SLOT(resetDataPlotScale()));
 	connect(ui->customPlotData->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlotData->xAxis2, SLOT(setRange(QCPRange)));
 	connect(ui->toolBox, SIGNAL(currentChanged(int)), this, SLOT(toolBoxPageChanged(int)));
@@ -269,6 +270,10 @@ void MainWindow::toolBoxPageChanged(int currentPageIndex)
 	{
 		choosePeaksToolsOpened();
 	}
+	else if (currentPageIndex == 2)
+	{
+		chooseCalibrationPeaksConfigOpened();
+	}
 }
 
 void MainWindow::openDataFilesToolsOpened()
@@ -278,8 +283,18 @@ void MainWindow::openDataFilesToolsOpened()
 
 void MainWindow::choosePeaksToolsOpened()
 {
-	peakFinder_.findAllPeaks(myQtData_.getSelectedListItem()->getSpectum().getDataVector());
-	peakConfigChanged();
+	int numOfGraphs = ui->customPlotData->graphCount();
+	if (numOfGraphs > 1) ui->customPlotData->graph(1)->setVisible(true);
+	if (numOfGraphs > 2) ui->customPlotData->graph(2)->setVisible(true);
+	ui->customPlotData->replot();
+}
+
+void MainWindow::chooseCalibrationPeaksConfigOpened()
+{
+	int numOfGraphs = ui->customPlotData->graphCount();
+	if (numOfGraphs > 1)ui->customPlotData->graph(1)->setVisible(false);
+	if (numOfGraphs > 2)ui->customPlotData->graph(2)->setVisible(false);
+	ui->customPlotData->replot();
 }
 
 void MainWindow::peakSelected(QListWidgetItem * item)
@@ -305,6 +320,7 @@ void MainWindow::addSelectedPeakForCalibration(QListWidgetItem * item)
 void MainWindow::refreshCalibrationPeakList()
 {
 	ui->list_calibration_peaks->clear();
+	ui->list_calibration_peaks_2->clear();
 	if (!config_.peakSearchConfigEntries.empty())
 	{
 		ui->toolBox->setItemEnabled(2, true);
@@ -319,6 +335,7 @@ void MainWindow::refreshCalibrationPeakList()
 		QString str;
 		str.sprintf("%d. Channel: %.4d", i, config_.peakSearchConfigEntries[i].centerChannel);
 		ui->list_calibration_peaks->addItem(str);
+		ui->list_calibration_peaks_2->addItem(str);
 	}
 	dataPlot_.plotCalibrationPeaks(config_.peakSearchConfigEntries);
 }
@@ -345,5 +362,12 @@ void MainWindow::peakCalibrationSelected(QListWidgetItem * item)
 {
 
 	int index = ui->list_calibration_peaks->row(item);
+	dataPlot_.highlightSelectedCalibrationPeak(index);
+}
+
+void MainWindow::peakCalibrationSelected2(QListWidgetItem * item)
+{
+
+	int index = ui->list_calibration_peaks_2->row(item);
 	dataPlot_.highlightSelectedCalibrationPeak(index);
 }

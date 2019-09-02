@@ -54,7 +54,7 @@ private:
 	const std::vector<double>* data_;
 
 	//Peak data
-	std::vector<HCMRPeak> peaks_;
+	std::vector<HCMRPeak> allPeaks_;
 };
 
 #endif //HCMR_PICKFINDER_H

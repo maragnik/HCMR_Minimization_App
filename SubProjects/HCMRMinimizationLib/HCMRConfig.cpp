@@ -5,6 +5,7 @@ HCMRConfig::HCMRConfig()
 	peakSearchConfigEntries.clear();
 }
 
+int HCMRConfig::nextId = 1;
 void HCMRConfig::addPeakSearchConfigEntry(PeakSearchConfigEntry peakSearchConfigEntry)
 {
 	for (const PeakSearchConfigEntry& entry : peakSearchConfigEntries)
@@ -14,6 +15,8 @@ void HCMRConfig::addPeakSearchConfigEntry(PeakSearchConfigEntry peakSearchConfig
 			return;
 		}
 	}
+	peakSearchConfigEntry.id = nextId;
+	nextId++;
 	peakSearchConfigEntries.push_back(peakSearchConfigEntry);
 }
 

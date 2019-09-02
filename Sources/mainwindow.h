@@ -42,12 +42,14 @@ private slots:
 	void toolBoxPageChanged(int currentPageIndex);
 	void openDataFilesToolsOpened();
 	void choosePeaksToolsOpened();
+	void chooseCalibrationPeaksConfigOpened();
 	void peakSelected(QListWidgetItem* item);
 	void addSelectedPeakForCalibration();
 	void addSelectedPeakForCalibration(QListWidgetItem* item);
 	void removeSelectedCalibrationPeak();
 	void removeAllCalibrationPeaks();
 	void peakCalibrationSelected(QListWidgetItem* item);
+	void peakCalibrationSelected2(QListWidgetItem* item);
 
 
 private:

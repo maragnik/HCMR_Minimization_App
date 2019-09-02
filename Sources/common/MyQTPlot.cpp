@@ -69,7 +69,7 @@ void MyQTPlot::plotPeaks(std::vector<HCMRPeak> peaks, int graphNumber)
 	checkAddGraph(graphNumber);
 	_shouldScale = false;
 	_customPlot->graph(graphNumber)->setLineStyle(QCPGraph::lsNone);
-	_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::red, 7));
+	_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::blue, Qt::blue, 7));
 
 	QVector<double> y;
 	QVector<double> x;
@@ -92,7 +92,7 @@ void MyQTPlot::plotSelectedPeak(HCMRPeak peak, int graphNumber)
 	{
 		_shouldScale = false;
 		_customPlot->graph(graphNumber)->setLineStyle(QCPGraph::lsNone);
-		_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::red, 12));
+		_customPlot->graph(graphNumber)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::blue, Qt::blue, 12));
 		x.push_back(peak.channel);
 		y.push_back(peak.value);
 	}
@@ -115,11 +115,11 @@ void MyQTPlot::plotCalibrationPeaks(std::vector<PeakSearchConfigEntry> peakSearc
 		_peakLines.push_back(infLine);
 
 		int channelsToLeft = peakSearchConfigEntries[i].searchRelativeToOtherPeak ?
-			peakSearchConfigEntries[i].numOfChannelsToTheLeftOfOtherPeak :
+			peakSearchConfigEntries[i].numOfChannelsToTheLeft2 :
 			peakSearchConfigEntries[i].numOfChannelsToTheLeft;
 
 		int channelsToRight = peakSearchConfigEntries[i].searchRelativeToOtherPeak ?
-			peakSearchConfigEntries[i].numOfChannelsToTheRightOfOtherPeak :
+			peakSearchConfigEntries[i].numOfChannelsToTheRight2 :
 			peakSearchConfigEntries[i].numOfChannelsToTheRight;
 
 		QCPItemRect* rect = new QCPItemRect(_customPlot);

@@ -12,7 +12,7 @@ HCMRPeakFinder::HCMRPeakFinder() : data_(nullptr), fcn_()
 
 void HCMRPeakFinder::setData(const std::vector<double>& data)
 {
-	peaks_.clear();
+	allPeaks_.clear();
 	finalPeaks_.clear();
 	data_ = &data;
 }
@@ -85,21 +85,21 @@ bool HCMRPeakFinder::peakRemains(const std::vector<double>& data, int peakIndex,
 void HCMRPeakFinder::choosePeaks(int minPeakWindow, int minPeakWindowNoEdges, double minPeakToValey, int minPeakWidth)
 {
 	finalPeaks_.clear();
-	for (int i = 0; i < peaks_.size(); ++i)
+	for (int i = 0; i < allPeaks_.size(); ++i)
 	{
-		if (peaks_[i].width >= minPeakWindow &&
-			peaks_[i].widthNoEdge >= minPeakWindowNoEdges &&
-			peaks_[i].peakToValey * 100. / peaks_[i].value >= minPeakToValey &&
-			peaks_[i].widthPtV >= minPeakWidth)
+		if (allPeaks_[i].width >= minPeakWindow &&
+			allPeaks_[i].widthNoEdge >= minPeakWindowNoEdges &&
+			allPeaks_[i].peakToValey * 100. / allPeaks_[i].value >= minPeakToValey &&
+			allPeaks_[i].widthPtV >= minPeakWidth)
 		{
-			finalPeaks_.push_back(peaks_[i]);
+			finalPeaks_.push_back(allPeaks_[i]);
 		}
 	}
 }
 
 void HCMRPeakFinder::findAllPeaks(const std::vector<double>& data)
 {
-	peaks_.clear();
+	allPeaks_.clear();
 
 	bool accoundForEdges = true;
 	for (int peakIndex = 1; peakIndex < data.size() - 1; ++peakIndex)
@@ -124,7 +124,7 @@ void HCMRPeakFinder::findAllPeaks(const std::vector<double>& data)
 				currentHalfWindow++;
 			}
 			peak.widthNoEdge = 2 * (currentHalfWindow - 1) + 1;
-			peaks_.push_back(peak);
+			allPeaks_.push_back(peak);
 		}
 	}
 	correctWidthNoEdgeValues();
@@ -132,14 +132,14 @@ void HCMRPeakFinder::findAllPeaks(const std::vector<double>& data)
 
 void HCMRPeakFinder::correctWidthNoEdgeValues()
 {
-	for (int i = 0; i < peaks_.size(); ++i)
+	for (int i = 0; i < allPeaks_.size(); ++i)
 	{
 		int j = i + 1;
-		while ((j != peaks_.size()) && (peaks_[j].channel < (peaks_[i].channel + peaks_[i].widthNoEdge / 2)))
+		while ((j != allPeaks_.size()) && (allPeaks_[j].channel < (allPeaks_[i].channel + allPeaks_[i].widthNoEdge / 2)))
 		{
-			if (peaks_[j].value > peaks_[i].value)
+			if (allPeaks_[j].value > allPeaks_[i].value)
 			{
-				peaks_[i].widthNoEdge = 2 * (peaks_[j].channel - peaks_[i].channel - 1) + 1;
+				allPeaks_[i].widthNoEdge = 2 * (allPeaks_[j].channel - allPeaks_[i].channel - 1) + 1;
 			}
 			j++;
 		}
